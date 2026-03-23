@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte Diario de Producción – ILTEC</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- lz-string: comprime los datos para que el link no sea demasiado largo -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+<style>
+:root{
+  --green:#2d8a2d;--green-dk:#1a5e1a;--green-lt:#e8f5e9;
+  --gray-dk:#2c2c2c;--gray-md:#5a5a5a;--gray-lt:#9e9e9e;
+  --gray-bg:#f4f4f4;--gray-bd:#d0d0d0;--white:#ffffff;
+  --row-alt:#f9f9f9;--accent:#43a047;
+  --blue:#1565c0;--orange:#e65100;--purple:#6a1b9a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:#dde2dd;color:var(--gray-dk);min-height:100vh;padding:12px 10px 56px}
+.wrap{max-width:1100px;margin:0 auto;background:var(--white);border-radius:6px;box-shadow:0 4px 36px rgba(0,0,0,.15);overflow:hidden}
+
+/* STEPPER */
+.stepper{display:flex;align-items:stretch;background:#f4f4f4;border-bottom:2px solid var(--gray-bd)}
+.step{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-lt);border-right:1px solid var(--gray-bd)}
+.step:last-child{border-right:none}
+.snum{width:28px;height:28px;border-radius:50%;border:2px solid var(--gray-bd);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .3s}
+.step.done{color:var(--green);background:#f1f8e9}
+.step.done .snum{background:var(--green);border-color:var(--green);color:white}
+.step.s-prog{color:var(--blue);background:#e3f2fd}
+.step.s-prog .snum{background:var(--blue);border-color:var(--blue);color:white}
+.step.s-pun{color:var(--orange);background:#fff3e0}
+.step.s-pun .snum{background:var(--orange);border-color:var(--orange);color:white}
+.step.s-pleg{color:var(--purple);background:#f3e5f5}
+.step.s-pleg .snum{background:var(--purple);border-color:var(--purple);color:white}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--green-dk) 0%,var(--green) 65%,var(--accent) 100%);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 8px,rgba(255,255,255,.03) 8px,rgba(255,255,255,.03) 9px);pointer-events:none}
+.logo-box{background:var(--white);border-radius:5px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.18);z-index:1}
+.logo-box img{height:52px;width:auto;display:block}
+.hdr-title{flex:1;text-align:center;z-index:1}
+.hdr-title h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.55rem;letter-spacing:3px;color:white;text-transform:uppercase}
+.hdr-title p{font-size:.72rem;color:rgba(255,255,255,.65);letter-spacing:1px;margin-top:3px}
+.hdr-meta{text-align:right;z-index:1}
+.hdr-meta div{color:rgba(255,255,255,.8);font-size:.68rem;line-height:1.9;letter-spacing:.5px}
+.hdr-meta span{color:white;font-weight:600}
+
+/* ROLE BADGE */
+.rbadge{margin:12px 24px 0;padding:10px 16px;border-radius:5px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;align-items:center;gap:10px;display:none}
+.rbadge.prog{background:#e3f2fd;color:var(--blue);border:1.5px solid #90caf9;display:flex}
+.rbadge.pun{background:#fff3e0;color:var(--orange);border:1.5px solid #ffcc80;display:flex}
+.rbadge.pleg{background:#f3e5f5;color:var(--purple);border:1.5px solid #ce93d8;display:flex}
+
+/* BODY */
+.fbody{padding:16px 24px 32px}
+
+/* SECTIONS */
+.sec{margin-bottom:20px}
+.sec-hdr{color:white;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.83rem;letter-spacing:2.5px;text-transform:uppercase;padding:7px 14px;border-radius:4px 4px 0 0;display:flex;align-items:center;gap:8px}
+.sh-dk{background:var(--gray-dk)}
+.sh-or{background:linear-gradient(90deg,#bf360c,var(--orange))}
+.sh-pu{background:linear-gradient(90deg,#4a148c,var(--purple))}
+.badge{background:rgba(255,255,255,.15);border-radius:3px;padding:1px 8px;font-size:.63rem;letter-spacing:1px}
+.sec-body{border:1.5px solid var(--gray-bd);border-top:none;border-radius:0 0 4px 4px;padding:14px;background:var(--white)}
+.sec-body.locked{background:#fafafa}
+.stitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray-md);border-bottom:1px solid var(--gray-bd);padding-bottom:4px;margin-bottom:12px;margin-top:16px}
+.stitle:first-child{margin-top:0}
+.lhint{font-size:.7rem;color:var(--gray-lt);font-style:italic;margin-top:8px;padding:6px 10px;background:#f0f0f0;border-radius:3px;border-left:3px solid var(--gray-bd)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px 14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px 12px}
+.gcab{display:grid;grid-template-columns:2fr 1fr 2fr;gap:0 14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.drow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:8px}
+
+/* CONTROLS */
+.fl{display:block;font-size:.65rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--gray-md);margin-bottom:4px}
+input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{width:100%;padding:7px 9px;border:1.5px solid var(--gray-bd);border-radius:4px;font-family:'Barlow',sans-serif;font-size:.86rem;color:var(--gray-dk);background:white;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(45,138,45,.12)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a5a5a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;cursor:pointer}
+textarea{resize:vertical;min-height:66px}
+input:disabled,select:disabled,textarea:disabled{background:#efefef;color:var(--gray-md);cursor:not-allowed;border-color:#e0e0e0}
+
+/* MATERIAL TABLE 6 FILAS */
+.mat-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.mat-table th{background:var(--gray-bg);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.66rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-dk);padding:7px 8px;border:1.5px solid var(--gray-bd);text-align:center;white-space:nowrap}
+.mat-table td{border:1px solid var(--gray-bd);padding:3px 4px}
+.mat-table tr:nth-child(even) td{background:var(--row-alt)}
+.mat-table tr:hover td{background:#fff8e1}
+.mat-table td select,.mat-table td input{border:none;background:transparent;font-size:.83rem;padding:4px 4px;width:100%;outline:none;font-family:'Barlow',sans-serif;color:var(--gray-dk)}
+.mat-table td select:focus,.mat-table td input:focus{background:#fffde7;border-radius:3px}
+.mat-table td select:disabled,.mat-table td input:disabled{background:#efefef;color:var(--gray-md);cursor:not-allowed}
+.mat-row-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;color:var(--gray-lt);text-align:center;background:var(--gray-bg)!important;border-right:1.5px solid var(--gray-bd)!important;width:28px}
+
+/* DOBLE SELECTOR DE NOMBRES */
+.names-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.name-slot .name-badge{display:inline-block;margin-top:4px;padding:2px 10px;border-radius:10px;font-size:.7rem;font-weight:700;color:white;letter-spacing:.5px}
+.name-slot:first-child .name-badge{background:var(--green-dk)}
+.name-slot:last-child  .name-badge{background:var(--orange)}
+
+/* FIRMA DROPDOWN */
+.firma{border-top:1.5px dashed var(--gray-bd);margin-top:14px;padding-top:12px;display:flex;justify-content:flex-end;gap:20px;flex-wrap:wrap}
+.firma-item{text-align:center;min-width:200px}
+.firma-item .fl{margin-bottom:5px;color:var(--green-dk)}
+.firma-underline{height:2px;background:linear-gradient(90deg,var(--green-dk),var(--green));border-radius:2px;margin-top:6px}
+
+/* INTERVALOS DE PARO */
+.paros-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}
+.paro-card{background:var(--white);border:1.5px solid var(--gray-bd);border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.paro-header{display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(90deg,var(--green-dk),var(--green));color:white}
+.paro-num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.82rem;flex-shrink:0}
+.paro-htitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase}
+.paro-body{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.paro-times{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.paro-duration{display:flex;align-items:center;justify-content:space-between;background:var(--green-lt);border:1px solid #a5d6a7;border-radius:4px;padding:5px 10px;margin-top:2px}
+.paro-duration-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--green-dk)}
+.paro-duration-value{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.95rem;color:var(--green-dk)}
+.paro-duration-value.has-time{color:#1b5e20}
+.paro-codigo{margin-top:2px}
+.paro-card.locked-paro .paro-header{background:linear-gradient(90deg,var(--gray-md),var(--gray-lt))}
+@media(max-width:768px){.paros-wrap{grid-template-columns:1fr}}
+
+/* QUALITY TABLE */
+.qt{width:100%;border-collapse:collapse;margin-top:8px}
+.qt th{background:var(--gray-bg);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.64rem;letter-spacing:1px;text-transform:uppercase;color:var(--gray-md);padding:7px 10px;border:1px solid var(--gray-bd);text-align:center}
+.qt td{padding:7px 10px;border:1px solid var(--gray-bd);font-size:.84rem}
+.qt td:first-child{font-weight:600;font-size:.76rem;background:var(--gray-bg);width:130px}
+.rg{display:flex;gap:14px;justify-content:center}
+.rg label{display:flex;align-items:center;gap:5px;font-size:.82rem;cursor:pointer;font-weight:500}
+.rg input[type=radio]{accent-color:var(--green);cursor:pointer}
+
+/* CONFORME */
+.ccard{border-radius:5px;padding:11px 13px;border:1.5px solid}
+.cok{border-color:#2e7d32;background:#f1f8e9}
+.cnok{border-color:#c62828;background:#fff8f8}
+.ctitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.cok .ctitle{color:#2e7d32}
+.cnok .ctitle{color:#c62828}
+
+/* FIRMA */
+.firma{border-top:1.5px dashed var(--gray-bd);margin-top:14px;padding-top:10px;display:flex;justify-content:flex-end}
+.fline{width:180px;height:1px;background:var(--gray-dk);margin:26px auto 4px}
+.flabel{font-size:.65rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray-md);text-align:center}
+
+/* PLANO */
+.pdrop{border:2.5px dashed var(--green);border-radius:8px;padding:26px 20px;text-align:center;background:var(--green-lt);cursor:pointer;position:relative;transition:background .2s}
+.pdrop:hover{background:#dcedc8}
+.pdrop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+#plano-preview{display:none;margin-top:12px;border:1px solid var(--gray-bd);border-radius:5px;overflow:hidden;max-height:300px;text-align:center;background:#fafafa}
+#plano-preview img{max-width:100%;max-height:300px;display:block;margin:auto}
+
+/* ACTIONS */
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;flex-wrap:wrap}
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:1.8px;text-transform:uppercase;padding:11px 20px;border-radius:4px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-out{background:transparent;border:1.5px solid var(--gray-bd);color:var(--gray-md)}
+.btn-out:hover{border-color:var(--gray-dk);color:var(--gray-dk)}
+.btn-print{background:var(--gray-dk);color:white}
+.btn-blue{background:linear-gradient(135deg,#1565c0,#1976d2);color:white;box-shadow:0 3px 12px rgba(21,101,192,.3)}
+.btn-blue:hover{box-shadow:0 5px 18px rgba(21,101,192,.42);transform:translateY(-1px)}
+.btn-orange{background:linear-gradient(135deg,#bf360c,var(--orange));color:white;box-shadow:0 3px 12px rgba(230,81,0,.3)}
+.btn-orange:hover{box-shadow:0 5px 18px rgba(230,81,0,.42);transform:translateY(-1px)}
+.btn-purple{background:linear-gradient(135deg,#4a148c,var(--purple));color:white;box-shadow:0 3px 12px rgba(106,27,154,.3)}
+.btn-purple:hover{box-shadow:0 5px 18px rgba(106,27,154,.42);transform:translateY(-1px)}
+
+@media(max-width:768px){
+  .pgrid,.g4,.g5{grid-template-columns:1fr 1fr}
+  .gcab{grid-template-columns:1fr}
+  .hdr{flex-direction:column;text-align:center}
+  .hdr-meta{text-align:center}
+  .crow,.drow{grid-template-columns:1fr}
+  .step .slabel{display:none}
+}
+@media print{body{background:white;padding:0}.wrap{box-shadow:none}.actions,.stepper,.rbadge{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- STEPPER -->
+<div class="stepper">
+  <div class="step" id="s1"><div class="snum">1</div><span class="slabel">&nbsp;Programador</span></div>
+  <div style="display:flex;align-items:center;padding:0 4px;color:var(--gray-bd);font-size:1.3rem">›</div>
+  <div class="step" id="s2"><div class="snum">2</div><span class="slabel">&nbsp;Punzonado</span></div>
+  <div style="display:flex;align-items:center;padding:0 4px;color:var(--gray-bd);font-size:1.3rem">›</div>
+  <div class="step" id="s3"><div class="snum">3</div><span class="slabel">&nbsp;Plegado</span></div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo-box">
+    <img src="data:image/png;base64,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" alt="ILTEC">
+  </div>
+  <div class="hdr-title">
+    <h1>Reporte Diario de Producción</h1>
+    <p>Control de Operaciones en Planta</p>
+  </div>
+  <div class="hdr-meta">
+    <div>Fecha Edición: <span>10/01/2018</span></div>
+    <div>Versión: <span>2</span></div>
+    <div>Fecha Revisión: <span>31/05/2024</span></div>
+  </div>
+</header>
+
+<div class="rbadge" id="rbadge"></div>
+
+<div class="fbody">
+
+  <!-- CABECERA -->
+  <div class="sec">
+    <div class="sec-hdr sh-dk">📋 Información General de la Orden</div>
+    <div class="sec-body" id="secCab">
+      <div class="gcab">
+        <div>
+          <label class="fl">Ítem de la Pieza</label>
+          <input type="text" id="item" placeholder="Ej: 25147 – Tapa Posterior Wall Pack Pro">
+        </div>
+        <div>
+          <label class="fl">Cantidad a Fabricar</label>
+          <input type="number" id="cant" min="1" placeholder="0">
+        </div>
+        <div>
+          <label class="fl">Tipo de Material y Calibre</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <select id="mat">
+              <option value="">— Material —</option>
+              <option>Chapa Acero Galvanizado</option>
+              <option>Acero Inoxidable</option>
+              <option>Lámina Cold Rolled</option>
+              <option>Lámina Hot Rolled</option>
+              <option>Aluminio</option>
+              <option>Cobre</option>
+            </select>
+            <select id="cal">
+              <option value="">— Calibre —</option>
+              <option>Cal. 10</option><option>Cal. 12</option><option>Cal. 14</option>
+              <option>Cal. 16</option><option>Cal. 18</option><option>Cal. 20</option>
+              <option>Cal. 22</option><option>Cal. 24</option><option>Cal. 26</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANO -->
+  <div class="sec" id="secPlano">
+    <div class="sec-hdr sh-dk">📐 Plano de la Pieza <span class="badge">Solo Programador</span></div>
+    <div class="sec-body">
+      <div class="pdrop">
+        <input type="file" id="planoFile" accept=".jpg,.jpeg,.png,.pdf" onchange="previewPlano(event)">
+        <div style="font-size:2rem;margin-bottom:8px">📄</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:var(--green-dk);margin-bottom:3px">Cargar Plano Técnico</div>
+        <div style="font-size:.78rem;color:var(--gray-md)">Haga clic o arrastre aquí · JPG, PNG, PDF</div>
+      </div>
+      <div id="plano-preview">
+        <img id="plano-img" src="" alt="Plano">
+        <div id="plano-pdf" style="display:none;padding:16px;font-size:.86rem;color:var(--gray-md)">📎 PDF cargado. Compártelo por WhatsApp aparte.</div>
+      </div>
+      <div class="g3" style="margin-top:12px">
+        <div><label class="fl">Referencia del Plano</label><input type="text" id="plRef" placeholder="Ej: 25147 – Wall Pack Pro"></div>
+        <div><label class="fl">Proceso</label>
+          <select id="plProc">
+            <option value="">— Seleccionar —</option>
+            <option>Punzonado</option><option>Plegado</option>
+            <option>Punzonado – Plegado</option><option>Corte Láser</option><option>Troquelado</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label class="fl">Escala</label><input type="text" id="plEsc" placeholder="1:2.5"></div>
+          <div><label class="fl">Revisión</label><input type="text" id="plRev" placeholder="1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUNZONADO -->
+  <div class="sec" id="secPun">
+    <div class="sec-hdr sh-or">⚙ Punzonado <span class="badge">Sección 1</span></div>
+    <div class="sec-body" id="secPunBody">
+      <div class="stitle">Responsables &amp; Máquina</div>
+      <div class="g4">
+        <div>
+          <label class="fl">Nombres de Responsables</label>
+          <div class="names-wrap">
+            <div class="name-slot">
+              <select id="pu_resp1"><option value="">— Responsable 1 —</option></select>
+              <span class="name-badge">Responsable 1</span>
+            </div>
+            <div class="name-slot">
+              <select id="pu_resp2"><option value="">— Responsable 2 —</option></select>
+              <span class="name-badge">Responsable 2</span>
+            </div>
+          </div>
+        </div>
+        <div><label class="fl">Máquina</label>
+          <select id="pu_maq"><option value="">— Seleccionar —</option><option>Punzonadora 1</option><option>Punzonadora 2</option><option>Láser</option><option>Dobladora 1</option><option>Dobladora 2</option><option>Dobladora 3</option></select></div>
+        <div><label class="fl">Fecha Inicio</label><input type="date" id="pu_fi"></div>
+        <div><label class="fl">Hora Inicio</label><input type="time" id="pu_hi"></div>
+        <div><label class="fl">Fecha Final</label><input type="date" id="pu_ff"></div>
+        <div><label class="fl">Hora Final</label><input type="time" id="pu_hf"></div>
+      </div>
+      <div class="stitle" style="margin-top:16px">Intervalos de Tiempo de Paro — Corte</div>
+      <div class="paros-wrap" id="ppun"></div>
+      <div class="stitle" style="margin-top:16px">Material y Calibre</div>
+      <div style="overflow-x:auto">
+        <table class="mat-table">
+          <thead>
+            <tr>
+              <th style="width:28px">#</th>
+              <th>Lámina ó Retal</th>
+              <th>Medidas del Retal</th>
+              <th>Cantidad Retal Sobrante</th>
+              <th>Medidas del Retal Sobrante</th>
+              <th># Piezas por Retal ó Lámina</th>
+            </tr>
+          </thead>
+          <tbody id="matBody"></tbody>
+        </table>
+      </div>
+      <div class="stitle" style="margin-top:16px">Producto Conforme / No Conforme</div>
+      <div class="crow">
+        <div class="ccard cok"><div class="ctitle">✔ Producto Conforme</div><label class="fl">Cantidad Total</label><input type="number" id="pu_conf" min="0" placeholder="0"></div>
+        <div class="ccard cnok"><div class="ctitle">✖ Producto No Conforme</div><label class="fl">Cantidad Total</label><input type="number" id="pu_noconf" min="0" placeholder="0"></div>
+      </div>
+      <div class="drow">
+        <div><label class="fl">Tipo de Defecto</label><select id="pu_def"><option value="">— Seleccionar —</option><option>Deformación</option><option>Medida incorrecta</option><option>Corte irregular</option><option>Material dañado</option><option>Doble golpe</option><option>Rebaba</option><option>Otro</option></select></div>
+        <div><label class="fl">Causa del Defecto</label><select id="pu_cau"><option value="">— Seleccionar —</option><option>Desgaste de herramienta</option><option>Error de operario</option><option>Falla de máquina</option><option>Material defectuoso</option><option>Mala configuración</option><option>Otra</option></select></div>
+        <div><label class="fl">Acción Tomada</label><select id="pu_acc"><option value="">— Seleccionar —</option><option>Reproceso</option><option>Desecho</option><option>Reparación</option><option>Rechazo a proveedor</option><option>Otra</option></select></div>
+      </div>
+      <div class="stitle" style="margin-top:16px">Inspección de Calidad</div>
+      <table class="qt">
+        <thead><tr><th>Parámetro</th><th>Cumple</th><th>No Cumple</th></tr></thead>
+        <tbody>
+          <tr><td>Medidas</td>
+            <td><div class="rg"><label><input type="radio" name="pu_med" value="Cumple"> Sí</label></div></td>
+            <td><div class="rg"><label><input type="radio" name="pu_med" value="No cumple"> No</label></div></td></tr>
+          <tr style="background:var(--row-alt)"><td>Material</td>
+            <td><div class="rg"><label><input type="radio" name="pu_mat" value="Cumple"> Sí</label></div></td>
+            <td><div class="rg"><label><input type="radio" name="pu_mat" value="No cumple"> No</label></div></td></tr>
+          <tr><td>Calibre</td>
+            <td><div class="rg"><label><input type="radio" name="pu_cal" value="Cumple"> Sí</label></div></td>
+            <td><div class="rg"><label><input type="radio" name="pu_cal" value="No cumple"> No</label></div></td></tr>
+        </tbody>
+      </table>
+      <div class="stitle" style="margin-top:14px">Observaciones</div>
+      <textarea id="pu_obs" rows="3" placeholder="Observaciones del proceso de punzonado…"></textarea>
+      <div class="firma">
+        <div class="firma-item">
+          <label class="fl">Firma Operario_P</label>
+          <select id="pu_firma" class="firma-select"><option value="">— Seleccionar Operario_P —</option></select>
+          <div class="firma-underline"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLEGADO -->
+  <div class="sec" id="secPleg">
+    <div class="sec-hdr sh-pu">⚙ Plegado <span class="badge">Sección 2</span></div>
+    <div class="sec-body" id="secPlegBody">
+      <div class="stitle">Responsables &amp; Máquina</div>
+      <div class="g4">
+        <div>
+          <label class="fl">Nombres de Responsables</label>
+          <div class="names-wrap">
+            <div class="name-slot">
+              <select id="pl_resp1"><option value="">— Responsable 1 —</option></select>
+              <span class="name-badge">Responsable 1</span>
+            </div>
+            <div class="name-slot">
+              <select id="pl_resp2"><option value="">— Responsable 2 —</option></select>
+              <span class="name-badge">Responsable 2</span>
+            </div>
+          </div>
+        </div>
+        <div><label class="fl">Máquina</label>
+          <select id="pl_maq"><option value="">— Seleccionar —</option><option>Dobladora 1</option><option>Dobladora 2</option><option>Dobladora 3</option><option>Punzonadora 1</option><option>Punzonadora 2</option><option>Láser</option></select></div>
+        <div><label class="fl">Fecha Inicio</label><input type="date" id="pl_fi"></div>
+        <div><label class="fl">Hora Inicio</label><input type="time" id="pl_hi"></div>
+        <div><label class="fl">Fecha Final</label><input type="date" id="pl_ff"></div>
+        <div><label class="fl">Hora Final</label><input type="time" id="pl_hf"></div>
+      </div>
+      <div class="stitle" style="margin-top:16px">Intervalos de Tiempo de Paro — Troquelado</div>
+      <div class="paros-wrap" id="ppleg"></div>
+      <div class="stitle" style="margin-top:16px">Producto Conforme / No Conforme</div>
+      <div class="crow">
+        <div class="ccard cok"><div class="ctitle">✔ Producto Conforme</div><label class="fl">Cantidad Total</label><input type="number" id="pl_conf" min="0" placeholder="0"></div>
+        <div class="ccard cnok"><div class="ctitle">✖ Producto No Conforme</div><label class="fl">Cantidad Total</label><input type="number" id="pl_noconf" min="0" placeholder="0"></div>
+      </div>
+      <div class="drow">
+        <div><label class="fl">Tipo de Defecto</label><select id="pl_def"><option value="">— Seleccionar —</option><option>Deformación</option><option>Medida incorrecta</option><option>Doblez incorrecto</option><option>Ángulo fuera de tolerancia</option><option>Material dañado</option><option>Rebaba</option><option>Otro</option></select></div>
+        <div><label class="fl">Causa del Defecto</label><select id="pl_cau"><option value="">— Seleccionar —</option><option>Desgaste de herramienta</option><option>Error de operario</option><option>Falla de máquina</option><option>Material defectuoso</option><option>Mala configuración</option><option>Otra</option></select></div>
+        <div><label class="fl">Acción Tomada</label><select id="pl_acc"><option value="">— Seleccionar —</option><option>Reproceso</option><option>Desecho</option><option>Reparación</option><option>Rechazo a proveedor</option><option>Otra</option></select></div>
+      </div>
+      <div class="stitle" style="margin-top:16px">Inspección de Calidad</div>
+      <table class="qt">
+        <thead><tr><th>Parámetro</th><th>Cumple</th><th>No Cumple</th></tr></thead>
+        <tbody>
+          <tr><td>Medidas</td>
+            <td><div class="rg"><label><input type="radio" name="pl_med" value="Cumple"> Sí</label></div></td>
+            <td><div class="rg"><label><input type="radio" name="pl_med" value="No cumple"> No</label></div></td></tr>
+          <tr style="background:var(--row-alt)"><td>Material</td>
+            <td><div class="rg"><label><input type="radio" name="pl_mat" value="Cumple"> Sí</label></div></td>
+            <td><div class="rg"><label><input type="radio" name="pl_mat" value="No cumple"> No</label></div></td></tr>
+          <tr><td>Calibre</td>
+            <td><div class="rg"><label><input type="radio" name="pl_cal" value="Cumple"> Sí</label></div></td>
+            <td><div class="rg"><label><input type="radio" name="pl_cal" value="No cumple"> No</label></div></td></tr>
+        </tbody>
+      </table>
+      <div class="stitle" style="margin-top:14px">Observaciones</div>
+      <textarea id="pl_obs" rows="3" placeholder="Observaciones del proceso de plegado…"></textarea>
+      <div class="firma">
+        <div class="firma-item">
+          <label class="fl">Firma Operario</label>
+          <select id="pl_firma" class="firma-select"><option value="">— Seleccionar Operario —</option></select>
+          <div class="firma-underline"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions" id="acciones"></div>
+</div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   ▶▶ CONFIG — CAMBIAR ESTOS VALORES ◀◀
+   ══════════════════════════════════════════════ */
+const CFG = {
+  url:  "https://wal-35.github.io/reporte/reporte_produccion.html",
+  pun:  "573182150158",
+  pleg: "573158649000",
+  sup:  "573182150158"
+};
+
+/* ── NOMBRES — edita esta lista con los nombres reales del personal ── */
+const NOMBRES = [
+  "Andres Gamboa",
+  "Edison Madrid",
+  "Yeison Véles",
+  "Julian Cuartas",
+  "Walner Moreno",
+  "Leandro Olguin"
+];
+
+/* ── Poblar todos los selectores de nombres ── */
+function poblarNombres() {
+  const ids = ["pu_resp1","pu_resp2","pl_resp1","pl_resp2","pu_firma","pl_firma"];
+  const labels = {
+    "pu_resp1":"— Responsable 1 —","pu_resp2":"— Responsable 2 —",
+    "pl_resp1":"— Responsable 1 —","pl_resp2":"— Responsable 2 —",
+    "pu_firma":"— Seleccionar Supervisor —","pl_firma":"— Seleccionar Operario —"
+  };
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = "<option value=''>"+labels[id]+"</option>"+
+      NOMBRES.map(n=>"<option>"+n+"</option>").join("");
+  });
+}
+
+/* ── CODIGOS ── */
+const CODIGOS = ["001-Mantenimiento","002-Falta material","003-Cambio herramienta",
+  "004-Falla eléctrica","005-Configuración","006-Control calidad",
+  "007-Descanso","008-Inicio turno","009-Limpieza","010-Otro"];
+
+/* ── HELPERS ── */
+const $  = id => document.getElementById(id);
+const gv = id => ($(id)||{}).value||"";
+const sv = (id,v) => { const e=$(id); if(e) e.value=v||""; };
+const gr = n  => { const e=document.querySelector("input[name='"+n+"']:checked"); return e?e.value:""; };
+const sr = (n,v) => { const e=document.querySelector("input[name='"+n+"'][value='"+v+"']"); if(e) e.checked=true; };
+const hide = id => { const e=$(id); if(e) e.style.display="none"; };
+
+/* ══════════════════════════════════════════════
+   ENCODE / DECODE — usa LZString para comprimir
+   los datos ANTES de meterlos en la URL.
+   Esto reduce el tamaño ~70% y evita que
+   WhatsApp recorte el link.
+══════════════════════════════════════════════ */
+function enc(obj) {
+  return LZString.compressToEncodedURIComponent(JSON.stringify(obj));
+}
+function dec(str) {
+  try {
+    return JSON.parse(LZString.decompressFromEncodedURIComponent(str));
+  } catch(e) {
+    return {};
+  }
+}
+
+/* ── LOCK ── */
+function lockIds(ids) {
+  ids.forEach(id => { const e=$(id); if(e) e.disabled=true; });
+}
+function lockRadios(names) {
+  names.forEach(n => document.querySelectorAll("input[name='"+n+"']").forEach(e=>e.disabled=true));
+}
+function addHint(parentId, txt) {
+  const h=document.createElement("p");
+  h.className="lhint"; h.textContent=txt;
+  $(parentId).appendChild(h);
+}
+
+/* ── BUILD MATERIAL TABLE 6 ROWS ── */
+function buildMatTable() {
+  const tbody = document.getElementById("matBody");
+  const lamOpts = ["","Lámina","Retal"].map(v=>
+    "<option value='"+v+"'>"+(v||"— Tipo —")+"</option>"
+  ).join("");
+  for(let i=1;i<=6;i++) {
+    tbody.innerHTML +=
+      "<tr>"+
+      "<td class='mat-row-num'>"+i+"</td>"+
+      "<td><select id='pu_lam"+i+"'>"+lamOpts+"</select></td>"+
+      "<td><input type='text' id='pu_mr"+i+"' placeholder='1000×500 mm'></td>"+
+      "<td><input type='number' id='pu_cs"+i+"' min='0' placeholder='0'></td>"+
+      "<td><input type='text' id='pu_ms"+i+"' placeholder='300×200 mm'></td>"+
+      "<td><input type='number' id='pu_pl"+i+"' min='0' placeholder='0'></td>"+
+      "</tr>";
+  }
+}
+
+/* ── GET/SET/LOCK MATERIAL ROWS ── */
+function getMatRows() {
+  const rows=[];
+  for(let i=1;i<=6;i++) rows.push({
+    lam:gv("pu_lam"+i), mr:gv("pu_mr"+i),
+    cs:gv("pu_cs"+i), ms:gv("pu_ms"+i), pl:gv("pu_pl"+i)
+  });
+  return rows;
+}
+function setMatRows(rows) {
+  (rows||[]).forEach((r,i)=>{
+    sv("pu_lam"+(i+1),r.lam); sv("pu_mr"+(i+1),r.mr);
+    sv("pu_cs"+(i+1),r.cs);   sv("pu_ms"+(i+1),r.ms);
+    sv("pu_pl"+(i+1),r.pl);
+  });
+}
+function lockMatRows() {
+  for(let i=1;i<=6;i++)
+    lockIds(["pu_lam"+i,"pu_mr"+i,"pu_cs"+i,"pu_ms"+i,"pu_pl"+i]);
+}
+function matMsg(rows) {
+  let t="";
+  (rows||[]).forEach((r,i)=>{
+    if(r.lam||r.mr||r.cs||r.ms||r.pl)
+      t+="  Fila "+(i+1)+": "+(r.lam||"—")+" | Med:"+( r.mr||"—")+
+         " | Sob:"+(r.cs||"0")+"("+( r.ms||"—")+") | Pzas:"+(r.pl||"0")+"\\n";
+  });
+  return t||"  Sin datos\\n";
+}
+
+/* ── BUILD INTERVALOS DE PARO (3 por sección) ── */
+function buildParos(cid, px) {
+  const w=$(cid);
+  const opts=CODIGOS.map(c=>"<option>"+c+"</option>").join("");
+  for(let i=1;i<=3;i++) {
+    w.innerHTML+=
+      "<div class='paro-card' id='"+px+"card"+i+"'>"+
+        "<div class='paro-header'>"+
+          "<div class='paro-num'>"+i+"</div>"+
+          "<div class='paro-htitle'>Intervalo de Tiempo Paro "+i+"</div>"+
+        "</div>"+
+        "<div class='paro-body'>"+
+          "<div class='paro-times'>"+
+            "<div><label class='fl'>Hora Inicio</label>"+
+            "<input type='time' id='"+px+"hi"+i+"' oninput='calcDur(\""+px+"\","+i+")'></div>"+
+            "<div><label class='fl'>Hora Final</label>"+
+            "<input type='time' id='"+px+"hf"+i+"' oninput='calcDur(\""+px+"\","+i+")'></div>"+
+          "</div>"+
+          "<div class='paro-duration'>"+
+            "<span class='paro-duration-label'>⏱ Duración del paro</span>"+
+            "<span class='paro-duration-value' id='"+px+"dur"+i+"'>-- : --</span>"+
+          "</div>"+
+          "<div class='paro-codigo'>"+
+            "<label class='fl'>Código de Paro</label>"+
+            "<select id='"+px+"cod"+i+"'><option value=''>— Seleccionar código —</option>"+opts+"</select>"+
+          "</div>"+
+        "</div>"+
+      "</div>";
+  }
+}
+
+/* ── CALCULAR DURACIÓN AUTOMÁTICA ── */
+function calcDur(px, i) {
+  const hi=document.getElementById(px+"hi"+i).value;
+  const hf=document.getElementById(px+"hf"+i).value;
+  const el=document.getElementById(px+"dur"+i);
+  if(!hi||!hf){el.textContent="-- : --";el.className="paro-duration-value";return;}
+  const [hhi,mhi]=hi.split(":").map(Number);
+  const [hhf,mhf]=hf.split(":").map(Number);
+  let mins=(hhf*60+mhf)-(hhi*60+mhi);
+  if(mins<0) mins+=1440;
+  const h=Math.floor(mins/60), m=mins%60;
+  el.textContent=(h>0?h+"h ":"")+m+"min";
+  el.className="paro-duration-value has-time";
+}
+
+/* ── GET / SET / LOCK PAROS ── */
+function getParos(px) {
+  const a=[];
+  for(let i=1;i<=3;i++) a.push({
+    hi:(document.getElementById(px+"hi"+i)||{}).value||"",
+    hf:(document.getElementById(px+"hf"+i)||{}).value||"",
+    cod:(document.getElementById(px+"cod"+i)||{}).value||""
+  });
+  return a;
+}
+function setParos(px,arr) {
+  (arr||[]).forEach((p,i)=>{
+    sv(px+"hi"+(i+1),p.hi);
+    sv(px+"hf"+(i+1),p.hf);
+    sv(px+"cod"+(i+1),p.cod);
+    calcDur(px,i+1);
+  });
+}
+function lockParos(px) {
+  for(let i=1;i<=3;i++){
+    lockIds([px+"hi"+i,px+"hf"+i,px+"cod"+i]);
+    const c=document.getElementById(px+"card"+i);
+    if(c) c.classList.add("locked-paro");
+  }
+}
+function parosMsg(arr) {
+  let t="";
+  (arr||[]).forEach((p,i)=>{
+    if(p.hi||p.hf||p.cod){
+      let dur="";
+      if(p.hi&&p.hf){
+        const [hhi,mhi]=p.hi.split(":").map(Number);
+        const [hhf,mhf]=p.hf.split(":").map(Number);
+        let mins=(hhf*60+mhf)-(hhi*60+mhi);
+        if(mins<0) mins+=1440;
+        dur=(mins>=60?Math.floor(mins/60)+"h ":"")+mins%60+"min";
+      }
+      t+="  Paro "+(i+1)+": "+(p.hi||"--")+" → "+(p.hf||"--")+(dur?" ("+dur+")":"")+" | "+(p.cod||"Sin código")+"\n";
+    }
+  });
+  return t||"  Sin paros registrados\n";
+}
+
+/* ── CABECERA ── */
+function getCab() {
+  return {a:gv("item"),b:gv("cant"),c:gv("mat"),d:gv("cal"),
+           e:gv("plRef"),f:gv("plProc"),g:gv("plEsc"),h:gv("plRev")};
+}
+function setCab(d) {
+  sv("item",d.a); sv("cant",d.b); sv("mat",d.c); sv("cal",d.d);
+  sv("plRef",d.e); sv("plProc",d.f); sv("plEsc",d.g); sv("plRev",d.h);
+}
+function lockCab() {
+  lockIds(["item","cant","mat","cal"]);
+}
+
+/* ── PUNZONADO ── */
+function getPun() {
+  return {
+    a:gv("pu_resp1"), a2:gv("pu_resp2"), b:gv("pu_maq"),
+    c:gv("pu_fi"),d:gv("pu_hi"),e:gv("pu_ff"),f:gv("pu_hf"),
+    g:getParos("pu"),
+    mat:getMatRows(),
+    m:gv("pu_conf"),n:gv("pu_noconf"),
+    o:gv("pu_def"),p:gv("pu_cau"),q:gv("pu_acc"),
+    r:gr("pu_med"),s:gr("pu_mat"),t:gr("pu_cal"),
+    u:gv("pu_obs"), firma:gv("pu_firma")
+  };
+}
+function setPun(d) {
+  sv("pu_resp1",d.a); sv("pu_resp2",d.a2||""); sv("pu_maq",d.b);
+  sv("pu_fi",d.c);  sv("pu_hi",d.d);  sv("pu_ff",d.e);  sv("pu_hf",d.f);
+  setParos("pu",d.g);
+  setMatRows(d.mat);
+  sv("pu_conf",d.m);sv("pu_noconf",d.n);
+  sv("pu_def",d.o); sv("pu_cau",d.p); sv("pu_acc",d.q);
+  if(d.r) sr("pu_med",d.r);
+  if(d.s) sr("pu_mat",d.s);
+  if(d.t) sr("pu_cal",d.t);
+  sv("pu_obs",d.u); sv("pu_firma",d.firma||"");
+}
+function lockPun() {
+  lockIds(["pu_resp1","pu_resp2","pu_maq","pu_fi","pu_hi","pu_ff","pu_hf",
+           "pu_conf","pu_noconf","pu_def","pu_cau","pu_acc","pu_obs","pu_firma"]);
+  lockRadios(["pu_med","pu_mat","pu_cal"]);
+  lockParos("pu");
+  lockMatRows();
+}
+
+/* ── PREVIEW PLANO ── */
+function previewPlano(e) {
+  const f=e.target.files[0]; if(!f) return;
+  $("plano-preview").style.display="block";
+  if(f.type==="application/pdf") {
+    $("plano-img").style.display="none";
+    $("plano-pdf").style.display="block";
+  } else {
+    $("plano-pdf").style.display="none";
+    $("plano-img").style.display="block";
+    const r=new FileReader();
+    r.onload=ev=>$("plano-img").src=ev.target.result;
+    r.readAsDataURL(f);
+  }
+}
+
+/* ── MENSAJE FINAL ── */
+function buildMsg(c, p, pl) {
+  const ln  = "\n";
+  const SEP = "================================" + ln;
+  const sep = "--------------------------------" + ln;
+
+  const bloque = (icono, titulo) =>
+    ln + icono + " *" + titulo + "*" + ln + sep;
+
+  const fila = (label, valor) =>
+    "  " + label + ": " + (valor || "—") + ln;
+
+  function parosFmt(arr) {
+    let t = "";
+    (arr||[]).forEach((p, i) => {
+      if (p.hi || p.hf || p.cod) {
+        let dur = "";
+        if (p.hi && p.hf) {
+          const [hhi,mhi] = p.hi.split(":").map(Number);
+          const [hhf,mhf] = p.hf.split(":").map(Number);
+          let mins = (hhf*60+mhf) - (hhi*60+mhi);
+          if (mins < 0) mins += 1440;
+          dur = " (" + (mins >= 60 ? Math.floor(mins/60) + "h " : "") + (mins%60) + "min)";
+        }
+        t += "    ⏺ Paro " + (i+1) + ":  " + (p.hi||"--") + " → " + (p.hf||"--") + dur + ln;
+        t += "       Codigo: " + (p.cod||"Sin codigo") + ln;
+      }
+    });
+    return t || "    Sin paros registrados" + ln;
+  }
+
+  function matFmt(rows) {
+    let t = "";
+    (rows||[]).forEach((r, i) => {
+      if (r.lam || r.mr || r.cs || r.ms || r.pl)
+        t += "    ▪ Fila " + (i+1) + ":  " +
+             (r.lam||"—") +
+             " | Med: " + (r.mr||"—") +
+             " | Sobrante: " + (r.cs||"0") + " (" + (r.ms||"—") + ")" +
+             " | Piezas: " + (r.pl||"0") + ln;
+    });
+    return t || "    Sin datos de material" + ln;
+  }
+
+  const fecha = new Date().toLocaleString("es-CO", {
+    weekday: "long", year: "numeric", month: "long",
+    day: "numeric", hour: "2-digit", minute: "2-digit"
+  });
+
+  return (
+    "📋 *[ILTEC] REPORTE DIARIO DE PRODUCCION*" + ln +
+    SEP +
+
+    bloque("📌", "1. INFORMACION GENERAL") +
+    fila("Item / Referencia",    c.a) +
+    fila("Cantidad a fabricar",  c.b) +
+    fila("Material",             c.c) +
+    fila("Calibre",              c.d) +
+    fila("Referencia del plano", c.e) +
+    fila("Proceso",              c.f) +
+    fila("Escala",               c.g) +
+    fila("Revision",             c.h) +
+
+    bloque("🔧", "2. PUNZONADO") +
+    fila("Responsable 1",  p.a) +
+    fila("Responsable 2",  p.a2 || "—") +
+    fila("Maquina",        p.b) +
+    fila("Fecha inicio",   p.c) +
+    fila("Hora inicio",    p.d) +
+    fila("Fecha final",    p.e) +
+    fila("Hora final",     p.f) +
+    ln +
+    "  ⏱ *Paros de corte:*" + ln +
+    parosFmt(p.g) +
+    ln +
+    "  📦 *Material y calibre:*" + ln +
+    matFmt(p.mat) +
+    ln +
+    "  📊 *Produccion:*" + ln +
+    fila("Piezas conformes",    p.m) +
+    fila("Piezas no conformes", p.n) +
+    fila("Tipo de defecto",     p.o) +
+    fila("Causa del defecto",   p.p) +
+    fila("Accion tomada",       p.q) +
+    ln +
+    "  🔍 *Inspeccion de calidad:*" + ln +
+    fila("Medidas",  p.r || "—") +
+    fila("Material", p.s || "—") +
+    fila("Calibre",  p.t || "—") +
+    ln +
+    fila("Observaciones",    p.u) +
+    fila("Firma Operario", p.firma || "—") +
+
+    bloque("🔧", "3. PLEGADO") +
+    fila("Responsable 1",  pl.resp1) +
+    fila("Responsable 2",  pl.resp2 || "—") +
+    fila("Maquina",        pl.maq) +
+    fila("Fecha inicio",   pl.fi) +
+    fila("Hora inicio",    pl.hi) +
+    fila("Fecha final",    pl.ff) +
+    fila("Hora final",     pl.hf) +
+    ln +
+    "  ⏱ *Paros de troquelado:*" + ln +
+    parosFmt(pl.paros) +
+    ln +
+    "  📊 *Produccion:*" + ln +
+    fila("Piezas conformes",    pl.conf) +
+    fila("Piezas no conformes", pl.noconf) +
+    fila("Tipo de defecto",     pl.def) +
+    fila("Causa del defecto",   pl.cau) +
+    fila("Accion tomada",       pl.acc) +
+    ln +
+    "  🔍 *Inspeccion de calidad:*" + ln +
+    fila("Medidas",  pl.med || "—") +
+    fila("Material", pl.mat || "—") +
+    fila("Calibre",  pl.cal || "—") +
+    ln +
+    fila("Observaciones",  pl.obs) +
+    fila("Firma Operario", pl.firma || "—") +
+
+    SEP +
+    "📅 Enviado: " + fecha + ln +
+    "================================"
+  );
+}
+
+/* ══════════════════════════════════════════════
+   INICIALIZAR SEGÚN ROL
+   El rol se detecta leyendo el hash de la URL:
+   - Sin hash      → Programador
+   - #pun=DATOS    → Punzonador
+   - #pleg=DATOS   → Plegador
+══════════════════════════════════════════════ */
+buildParos("ppun","pu");
+buildParos("ppleg","pl");
+buildMatTable();
+poblarNombres();
+
+const hash = location.hash;
+let ROLE = "prog";
+let DATA = {};
+
+if(hash.startsWith("#pun="))  { ROLE="pun";  DATA=dec(hash.slice(5));  }
+if(hash.startsWith("#pleg=")) { ROLE="pleg"; DATA=dec(hash.slice(6)); }
+
+/* ─── PROGRAMADOR ─── */
+if(ROLE==="prog") {
+  $("s1").className="step s-prog";
+  $("rbadge").className="rbadge prog";
+  $("rbadge").innerHTML="🖥️ &nbsp;<strong>Programador</strong> — Complete la cabecera y el plano, luego envíe al Punzonador";
+  hide("secPun");
+  hide("secPleg");
+  $("acciones").innerHTML=
+    "<button class='btn btn-out' onclick='limpiar()'>↺ Limpiar</button>"+
+    "<button class='btn btn-blue' onclick='enviarAPun()'>📲 Enviar a Punzonado ›</button>";
+}
+
+/* ─── PUNZONADOR ─── */
+if(ROLE==="pun") {
+  $("s1").className="step done";
+  $("s2").className="step s-pun";
+  $("rbadge").className="rbadge pun";
+  $("rbadge").innerHTML="⚙️ &nbsp;<strong>Punzonado</strong> — Complete la Sección 1. La cabecera ya fue llenada por el Programador (solo lectura)";
+  hide("secPlano");
+  hide("secPleg");
+  if(DATA && DATA.cab) {
+    setCab(DATA.cab);
+    lockCab();
+    $("secCab").classList.add("locked");
+    addHint("secCab","🔒 Datos ingresados por el Programador — solo lectura");
+  }
+  $("acciones").innerHTML=
+    "<button class='btn btn-out' onclick='limpiarSec()'>↺ Limpiar mi sección</button>"+
+    "<button class='btn btn-print' onclick='window.print()'>🖨 Imprimir</button>"+
+    "<button class='btn btn-orange' onclick='enviarAPleg()'>📲 Enviar a Plegado ›</button>";
+}
+
+/* ─── PLEGADOR ─── */
+if(ROLE==="pleg") {
+  $("s1").className="step done";
+  $("s2").className="step done";
+  $("s3").className="step s-pleg";
+  $("rbadge").className="rbadge pleg";
+  $("rbadge").innerHTML="⚙️ &nbsp;<strong>Plegado</strong> — Complete la Sección 2. Las secciones anteriores son solo lectura";
+  hide("secPlano");
+  if(DATA && DATA.cab) {
+    setCab(DATA.cab);
+    lockCab();
+    $("secCab").classList.add("locked");
+    addHint("secCab","🔒 Datos del Programador — solo lectura");
+  }
+  if(DATA && DATA.pun) {
+    setPun(DATA.pun);
+    lockPun();
+    $("secPunBody").classList.add("locked");
+    addHint("secPunBody","🔒 Datos del Punzonador — solo lectura");
+  }
+  $("acciones").innerHTML=
+    "<button class='btn btn-out' onclick='limpiarSec()'>↺ Limpiar mi sección</button>"+
+    "<button class='btn btn-print' onclick='window.print()'>🖨 Imprimir</button>"+
+    "<button class='btn btn-purple' onclick='enviarFinal()'>✅ Guardar y Enviar Reporte ›</button>";
+}
+
+/* ══════════════════════════════════════════════
+   BOTONES
+══════════════════════════════════════════════ */
+function enviarAPun() {
+  const c=getCab();
+  if(!c.a.trim()) { alert("⚠️ Ingresa el Ítem de la Pieza antes de continuar."); return; }
+  const link = CFG.url+"#pun="+enc({cab:c});
+  const msg  =
+    "👷 *ILTEC – Reporte de Producción*\n"
+    +"📌 Ítem: *"+c.a+"*  |  Cant: "+c.b+"  |  "+c.c+" "+c.d+"\n\n"
+    +"Por favor completa la *Sección de Punzonado* abriendo este enlace:\n"
+    +link+"\n\n"
+    +"_(El plano técnico te llegará en mensaje aparte)_";
+  window.open("https://wa.me/"+CFG.pun+"?text="+encodeURIComponent(msg),"_blank");
+}
+
+function enviarAPleg() {
+  const c=DATA.cab||getCab();
+  const p=getPun();
+  if(!p.a) { alert("⚠️ Selecciona al menos el Responsable 1 antes de continuar."); return; }
+  const link = CFG.url+"#pleg="+enc({cab:c,pun:p});
+  const msg  =
+    "👷 *ILTEC – Reporte de Producción*\n"
+    +"📌 Ítem: *"+(c.a||"")+"*  |  Punzonado: "+p.a+" | Máq: "+p.b+"\n\n"
+    +"Por favor completa la *Sección de Plegado* abriendo este enlace:\n"
+    +link;
+  window.open("https://wa.me/"+CFG.pleg+"?text="+encodeURIComponent(msg),"_blank");
+}
+
+function enviarFinal() {
+  const c =DATA.cab||getCab();
+  const p =DATA.pun||getPun();
+  const pl={
+    resp1:gv("pl_resp1"), resp2:gv("pl_resp2"), maq:gv("pl_maq"),
+    fi:gv("pl_fi"),hi:gv("pl_hi"),ff:gv("pl_ff"),hf:gv("pl_hf"),
+    paros:getParos("pl"),
+    conf:gv("pl_conf"),noconf:gv("pl_noconf"),
+    def:gv("pl_def"),cau:gv("pl_cau"),acc:gv("pl_acc"),
+    med:gr("pl_med"),mat:gr("pl_mat"),cal:gr("pl_cal"),
+    obs:gv("pl_obs"), firma:gv("pl_firma")
+  };
+  if(!pl.resp1) { alert("⚠️ Selecciona al menos el Responsable 1 antes de enviar."); return; }
+  window.open("https://wa.me/"+CFG.sup+"?text="+encodeURIComponent(buildMsg(c,p,pl)),"_blank");
+}
+
+function limpiar() {
+  if(!confirm("¿Limpiar todos los campos?")) return;
+  document.querySelectorAll("input:not([type=radio]):not([type=file]),select,textarea").forEach(e=>e.value="");
+  document.querySelectorAll("input[type=radio]").forEach(e=>e.checked=false);
+  $("plano-preview").style.display="none";
+  $("plano-img").src="";
+  // reset duraciones
+  ["pu","pl"].forEach(px=>{
+    for(let i=1;i<=3;i++){
+      const d=$(px+"dur"+i);
+      if(d){d.textContent="-- : --";d.className="paro-duration-value";}
+    }
+  });
+  // repoblar nombres tras limpiar
+  poblarNombres();
+}
+
+function limpiarSec() {
+  if(!confirm("¿Limpiar solo los campos de tu sección?")) return;
+  const px = ROLE==="pun" ? "pu" : "pl";
+  // limpiar selects e inputs (excepto los deshabilitados)
+  document.querySelectorAll("[id^='"+px+"_']:not(:disabled),[id^='"+px+"hi'],[id^='"+px+"hf'],[id^='"+px+"cod'],[id^='"+px+"lam'],[id^='"+px+"_mr'],[id^='"+px+"_cs'],[id^='"+px+"_ms'],[id^='"+px+"_pl']").forEach(e=>{if(!e.disabled) e.value="";});
+  document.querySelectorAll("input[name^='"+px+"_']:not(:disabled)").forEach(e=>e.checked=false);
+  // limpiar nombres y firma
+  ["resp1","resp2","firma"].forEach(f=>{
+    const e=document.getElementById(px+"_"+f);
+    if(e&&!e.disabled) e.value="";
+  });
+  // reset duraciones de paro
+  for(let i=1;i<=3;i++){
+    const hi=$(px+"hi"+i),hf=$(px+"hf"+i),cod=$(px+"cod"+i),dur=$(px+"dur"+i);
+    if(hi&&!hi.disabled) hi.value="";
+    if(hf&&!hf.disabled) hf.value="";
+    if(cod&&!cod.disabled) cod.value="";
+    if(dur){dur.textContent="-- : --";dur.className="paro-duration-value";}
+  }
+  // reset filas de material si es punzonado
+  if(ROLE==="pun"){
+    for(let i=1;i<=6;i++){
+      ["pu_lam","pu_mr","pu_cs","pu_ms","pu_pl"].forEach(f=>{
+        const e=$(f+i); if(e&&!e.disabled) e.value="";
+      });
+    }
+  }
+}
+</script>
+</body>
+</html>
