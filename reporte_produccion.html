@@ -185,8 +185,7 @@ input:disabled,select:disabled,textarea:disabled{background:#efefef;color:var(--
 .pdrop{border:2.5px dashed var(--green);border-radius:8px;padding:26px 20px;text-align:center;background:var(--green-lt);cursor:pointer;position:relative;transition:background .2s}
 .pdrop:hover{background:#dcedc8}
 .pdrop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-#plano-preview{display:none;margin-top:12px;border:1px solid var(--gray-bd);border-radius:5px;overflow:hidden;max-height:300px;text-align:center;background:#fafafa}
-#plano-preview img{max-width:100%;max-height:300px;display:block;margin:auto}
+/* (plano-preview ahora es un div flex dentro de plano-preview-wrap) */
 
 /* ACTIONS */
 .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;flex-wrap:wrap}
@@ -227,7 +226,7 @@ input:disabled,select:disabled,textarea:disabled{background:#efefef;color:var(--
 <!-- HEADER -->
 <header class="hdr">
   <div class="logo-box">
-    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABXAMMDASIAAhEBAxEB/8QAHAAAAQUBAQEAAAAAAAAAAAAAAAQFBgcIAwIB/8QAShAAAQMDAgMDBAwMBQQDAAAAAQIDBAAFEQYSByExEyJBCDJRYRQWFyM3cXJ1kbPR0hU1NkJVVoGSlaGxsiQlJjNzVGKClDRS0//EABoBAQADAQEBAAAAAAAAAAAAAAADBAUBAgb/xAA2EQABAwIDAwoFAwUAAAAAAAABAAIRAwQFEiFBYXETFBUiMVFSgcHRIzQ1keEzofAyQmLS8f/aAAwDAQACEQMRAD8A2XRRXJUmOmS1GU8gPOoUttBVzUlONxA8QNyfpFEldaKjl5jz7tdLFcLPqRMSAzIUZDKEhQmAfmA+raoftJ8KeLkopMbE9MTMhI5pSe26+98+mfVz5V5DpleA+Z0/KV0VAHtQsaxiXSBprVjtqkwbgyhchcUYCVHYEJzjcFLBweueXQjNM8TdVaii8Qr3FhauuyYzUlaUBmQ40hBA/wBsJBAGD3c+OM+NVqt22mM0SFRucRZQaHxIO8b/AGWpaKorybr9e7tqO5NXS9XC4NohBaUSZC3AhW8DICieePH10l8o/UF+tWtoUe13u5QWVW1C1NxpS20lXaujJCSBnAHP1CnO28lysLhxJvNucZdJ7Ff9FZ78nfUN/umvHo1zvlznMCA4sNyJa3EhQWjBwokZ5n6aePKYvd5tE2xptV3nwEutvFwRpK2gvBRjO0jPU0F200TVhBiTTbG4y6DYrsorGftz1h+td9/iDv3qPbnrD9a77/EHfvVX6TZ4VT6ep+ArZlFYz9uesP1rvv8AEHfvUe3PWH6133+IO/ep0mzwp09T8BWzKKxn7c9YfrXff4g796j256w/Wu+/xB371Ok2eFOnqfgK2ZRWM/bnrD9a77/EHfvVpTgZOm3Hhrb5dwmSJkha3gp19wuLVhxQGSTnpU9veNrOygK3Z4my6qZA2NJU4opj1nquy6Stns68SuzCshllAy48oeCU+Phz5AZGSKoXVnG7U9ydW3ZUs2iLnCSlIcdI9alDA/YBj01JWuqdHRx1U11iFG20ede4LS1FY3e1zrJ13tFaqvIV6EzHEj6AcU92Di3ri1OpK7oLg0OrUxAWD/5DCv51WGJUydQVQbjtEmC0hatoqE8LeIcHXEd5DcJ+HNjJCn2yCpvBOAUrxjn6Dg9euCam1XmPa9uZp0WxSqsqsD2GQUUUUV7Ui+K3bTtICsciRkZqMyr4YWqbFY5t+tzcyRHWqRFEZYVJVjuqQckNjclXJROegyeYkrriGmluurShtCSpSlHASB1JPgKj02HbJ98teqW2rLJixY7xXcVuZW2nHdKFDulI7+STyzy8ajfOxQ1Z0y9un2nVc3UaoLti2320ACS4LgAzt9lI5lKGgSSFBIOefgT4YPKyzLv7DJm6nsch03lTO9CBt7IHHsYDcMPcj6SP+7rT1YrtZr9BTPtEuPNjocUkON89ix1HpBwfoPoNRrUF2Rp+LA9nPaWgqk3tRHaBe1TO87lpwOT4BTlR7oJOTzFeDDRmnTioXZWjPm04mNg701tou2kmtQ3K633TdtTNujXsV5MMDulRUpLgQlJUooPiSR3jnnmqS4tuKXxPv6lS4jp7ZSQtLfdwEYCMY88Duk//AGGc+NXZf3NSKtN4Gq2NINx/wm1+CjdFAMLRk5KuZOduMZwfOzyqkuLQWeJ9/wC7B/31EdipOzbsGD18/HM+O7NZ15owAdk+6xcT0pBomJ2zP9ymvktn/U1y7yDi3jklOCPfeh5cz4+PIj4gi8qP8voHzW39a7SzyWwfbPc8hGDAGMEZ/wB0dfX8fhikflR/l9A+a2/rXa8n5PzXh30scfVcfJj+ER/5ud/vbq5eI3D22a4ehO3CbMjGIlaUBjb3txGc5B9FU15MfwiP/Nzv97daXq1ZMa+hlcNJV/CaTKtnkeJEqoPcC03+mbt9Lf3apbiPYY2mNaXCxxHnXmYpbCVu43Hc2lRzgAdVVsisncePhYvfymfqG6hvqFOnTBaI1VbF7SjRoh1NsGfQrvwZ0Nb9bzLkzcJkqMIjaFILG3J3Eg5yD6KlXEfhBZNMaLuF8iXO4vPRQ2Uod2bTucSk5wkHoqvXkp/jS/f8DP8AcqrG48fBPe/ks/Xt0o0KbrYvI1gpbWlF9gajm9aDrwlZOrRDXATTi2kLN5uuVJB6t/drO9aOa486TQ0hBtl7ylIB96a//Sq9nyOvKqlhgtetziNkT5rn7gWm/wBM3b6W/u1NrXDtPDfQLja5TzkC3IcdK3cb1blE7eWBkk4HxikOgeJlj1neHrXbIdxZeajmQpUhCAkpCkpwNqic5UKiXlS3dyPYLXZm1kCY+p50A9UtgYB9WVg/+NaHwaVM1aYW0TbW9F1xQA7I/nmqT1pqS4aq1BIvFxWStw4abzlLLY81CfUP5kk9TS3Qmh79rGUpu1MJTHbOHpTx2tN+rPUn1DNMdngu3S7w7bHIDst9DCCegUpQSP61s7TVlg6escW0W5oNx46Akcuaz4qPpJPM1n2tubhxc86LGw+yN7UL6h0HbvKqa3+T/bUsf5hqGW676WGUoSPp3Z/lTNf+Al1YdQqyXiPLaU4EqTIR2Sm0k4KsgkKx1PT1A1oOitM2NAiIW87CbUiMseZTHojTFt0lYGrTbkck9550jvPL8VK+zwGBT5RRVprQ0QFfYxrGhrRACKKKK6vS5TIzEyI9ElNJdYfbU26hXRSVDBB+MGkUOxWmHp72vxoaG7Z2KmOwCjjYrO4Zznnk885505UVyAdV5LWkyQozYdPxdIMQ7Vpy1IVCflLcluOye+33POGclR5AYGOX7abpOltH62hoXJiQXEQp76sQJYUkrUvKt5RjvLASog8xnGakV3sttu78GZcIK3X4LinI3vpSUKIwT3VYOQB1z/WqZ0RcL3oqyqNl4fXhTs66lt9MpxS1BtATtSnCE485QCiMZB5nomrULWENcOr/AM3KhXcykQxzeod092yO/epXqGHqDVNqvEC66JgS0Q7o2YDSZ3Yl1AykrUoK6hG30cldMpxVKcVmOw4mX1lMCOwEvKKWkL7oGwEL5HqR3sek4x4VdNn7aMdVPscPLmHl3hl3YZikmWoOlQdSTgAJUArAyDuxnAql+LDAHE7UCE2+Qz/iFudnvyead3aZx5p8/HgDjPjVG7HUB2z77gsjEgDSDtpP+3+I/n3U18lsf6nuXcSn/LxzByVe+jmefL0eHSkflR/l9A+a2/rXaWeS2kp1PciW1p3W8EFXRXvoGRy6csePMGkflR/l9A+a2/rXa4fk/Ncd9LHH1XHyY/hEf+bnf7260vWaPJj+ER/5ud/vbrS9XMP/AEfNaeC/LeZRWTuPHwsXv5TP1DdaxrJ3Hj4WL38pn6huvOJfpDj7qPHfl28fQqZ+Sn+NL9/wM/3KqxuPHwT3v5LP17dVz5Kf40v3/Az/AHKqxuPHwT3v5LP17dcofJngfVcs/pp4O9Vk6nwaN1eQCNK30g9D+D3fu0x1uWN/8dv5A/pVG0thXmTELIw6wbd5sxiIVCeThp+/WrW82RdLJcoLKratCXJMVbaSrtWjgFQAzgHl6jX3yrG1i62J057NTDqR8YUkn+oq/qrLyjtPuXfQwuMdBW/a3e2IAyS0Rhf0d1XxJNaFW2yWxY3Xatq4suSsXUmGY19VRHCt9qPxGsDr+Nns5tPPwKjgfzIrYlYYZccZeQ80tSHEKCkKScFJHMEVrThVrqDrKxtkutt3VhAEuPnBz03pHik/yzj44MNqgSwqpgVdozUj2nUKZ0UV8UQkZUQBnHOtZfRr7RRRREUUUURFIp9tbmSmpC5MxstNONhDL6kIUFgAlQHUjHInpmltFcIlcIB0KraJoe1WxelWGl6neEKe660rIKUE94l7l3UEoAGOu4+mp5c7c1PEUOPymvY0lMhPYvKRuUnPdVjqk55p6GuWmrY7Z7Q1Aeuc25rQpRMiWvc4rKicE+rOK8aZtL9njSmpF3nXRT8pb6XJS9ym0qxhtPoSMdPWelRMphoiO1V6VEMEBuh/aAFENdCNrKyXC2zbRqiM3bLm2gGLHAXJO4p3oB5KQASrPgMH1VQvFdDLfEq/IDcxKRJXyeV3yrHXn+aTzH/aRWhzoa6qYu7ft4vaDPnIktLbWUqjoBOW0nPQhWOWB3U8uWDDdacGrxe9WXG9RtRNIRMcKwHkqK0pIxsyPzQOQ9WBVK6o1KjZDdfLesnELWtWZIZrO7emLyWdvtoum0KB9gDdnxPaDp+zFJPKj/L6B81t/Wu1YvCLhvcdFXaXMm3SPMQ9G7FCW0qG3vbvHw6/TSfi9wwuWtdSRrpDuUSK21DTHKHUqJJC1qzyHTvCuGhU5rkjWVw2lbo8UsvWnsVBaR1JddK3RVys7rbUlTRaKlthY2kgnkfiFSz3aNe/9fF/9RH2U/e4Dff07bf3F/ZR7gN9/Ttt/cX9lVW0bpghshUKdriFMZWAgcfyp9wH1de9W2q5yL0+065HfQhsoaCMApyelUvx4+Fi9/KZ+obq9uDuh5uiLdPizZseUqU8lxJZBAAAxzzUW4icH7nqfWU++x7xDjtSigpbW2oqTtbSnnj5NW61Kq+3a0iTPutG6tritZMYQS6df3TL5Kf40v3/AAM/3KqxuPHwT3v5LP17dIODvDudoeXcX5dxjyxLbQhIaQobdpJ55+OpPxGsL+p9GXCxxn22HZQQEuOAlI2uJVzx8mpqNJ7bYsI1gqzbUKjLA03DrQdOMrG1WGjjNrxKQkT4uAMD/Co+yn/3Ab7+nbb+4v7KPcBvv6dtv7i/srNZb3LP6QQsOlZ39KcgInuKYfdo17/18X/1EfZV7cJrzO1Rw/iXK8qbffkF1DuGwlKgFqTjA5dBVT+4Dff07bf3F/ZVxcM9OyNKaOiWOVIakOsKcJcbBCTuWVePx1dtG1w/4kxC1cNp3jap5eYjaeCoHjFw3maUuD1ytjDj1idVuSsd4xiT5i/VnkCfUOvWvoUqTClNyoch6M+2codaWUqSfSCOYrcTzbbzS2Xm0uNrSUrQoZCgeRBHiKrHVnBPS92dck2t16zPrydrIC2c567D0+IED1VHcYeZzUvsoLzBnZs9D7eyqKDxe19FYDP4ZS+AMAvR21KH7cZP7c0x6h1tqq/utrul7lu9msLbQhXZoSoHIUEowMjwPWrJd8n+5hzDeo4akelUdQP0ZP8AWnmwcA7Ww8l293qRNSCD2LDQZSfUSSokfFg1Dze6f1TMcVV5niNTqOmN5/KknBLXqtYWdcS4Ai7QUpD6wnCXknkF+gH0j08x6BYdILBZbVYbci32eCzDjJ57Gx5xwBlR6qPIczk0vrYpNc1gDjJX09uyoymG1DJ70UUUVIpkUUUURFFFFERUI9u0iVItaYkNtpD+p5NkkB0lZKGW5BK04xglTKeucAkeupvUDgaKuLDsFa5MQiNquXelYKubLqZASgcvPHbJz4cjzoimDF2tb6Iq2blCdTMWpuKpD6SH1pCipKMHvEBCyQOgSfQaZFcRNApQtZ1rp3aggKIuTRHPp+d6j9B9FMWl9F36BcbHFnP238Eafly5cN1lxapElTyXUJS4gpCWwlL684UrcQnoM100xoSZaxpjt3YKzaNOSLU9sB7zrhYIWnI833pec4Pe6czRFKXr7DjzJC5NwtDNtZhNSS+uaAtIWpYClJI2pbO0bV7u8QoY5ZPm3aq0xcrdLuUDUVplQoefZUhqY2ptnAzlagcJGOeT4c6g8jhvdXtKSLOuXAUt7TNss5KiopLkZbqnFHu+YQ4MePXIFO+qdFz7pc73OhyYTapSLW5FQ8lSkF2FIce2ugfmK3ITkEkDPLkMkUit+qtMXCHImwdRWmTGitB6Q63MbUllB3d5ZB7o7quZx5p9BpOxqq1XNuC9p+8WK4svzhFcX+EEjnsUspb2hW93Cc7DjKcnPLnEp2h9SXuXqK43RdjgyrmxbQwzFLjzYciPuOgPKUlBcSvKUk4B25GO6CXuXZdS3mVYZt3bs0N22XoTltRHnHQpoRXmsb1ITuWVOg+aAAOpPUifIup9OSr25Y41+tj10aKguG3KQp5JT5wKAc5HiPDxrxbdV6Xud1XabdqO0zJ6ASqMxMbccG3zu6Dnl4+jxqH2bQt9it2KxyHrX+BrHcjPYmNqWZkggrKUrQUhKSe0O9YUrcM8hu5K7DoadAtGlojsiIXbPeZk99xsqG5t5EsBKDjO7MhvOcDun0DJFKbbqXTtzuT9st19tkybHCi9HYlIW4jacKykHIwTg+g8jXuxX+x35t1yyXiBckMqCXFRZCXQgkZGdpOMjmPSKr3QvDe72GbbEy348lqzMOtwZLlzlP7lKbLYUYysNt91R3ALVnw2+Eg4Yabvem25Uae/HatvZMtQoDM12UiPsCgopW6kLSgjYA3lQTs5HmaIk90la7RruNYYl/0+3Hmw5c1pblkdWtpLTrCEtnEkBRIf5q7vm9OfJ50/q23XjU10ssWdanjBSjYWLg2666ejpLSSShKFFKcnxJGBgZ7zbNIf1xbr6l1tMeNa5cNackLK3nYy0kcsYAZVnn1I/ZA9FcMLlalQYd0lB2NbIT0WLLbu0lxw72y3uSwsBtk7SSQFLGcYxiiKdQ9Z6QmGWIuqbI/7DbLknZObPYoBwVq73JIJxk8s8q4u6vtE6xzZ+mr1p65LiOIbcU5c0tsIUpQGFuIC9pIJ28jk4Hjmo1I0jq2dw2m6JljTzTKbOLdEksuOlTpACQtaSgBtOBzSCvmevKlmstEz7xOvr0KRDZbuMC3RmkrKhtVGkuuqKsDoUrAGPEHoKIpNK1RpuLfG7HJv9rZujhSlENctCXiVeaNhOcnwHj4V4a1bpV28Ks7epLOu5JcLRiCa2Xe0HIo25zuHiOopntVi1FZtS3NUAWiTarpcxcH3pTjgks5QhKkBISUr8zuqKk7RgYOKYYehtTsq07alOWVVpsV6VcW5XaOGVIQe17qkbNqV++8yFHdjPd6URT623+x3O4Sbfbrxb5kyISJDDEhC3GiDtO5IORggg+sEdacqg+htMX+yalmSZD8Ni0utu4hxpTzrbjy3d4dS24P8OMFeUIWpJK88sCpxREUUUURFFFFERRRRREUUUURFFFFERRRRREUUUURFFFFERRRRREUUUURFFFFERRRRREUUUURFFFFEX//Z" alt="ILTEC">
+    <img src="logo_iltec.png" alt="ILTEC_logo">
   </div>
   <div class="hdr-title">
     <h1>Reporte Diario de Producción</h1>
@@ -286,8 +285,8 @@ input:disabled,select:disabled,textarea:disabled{background:#efefef;color:var(--
     <div class="sec-hdr sh-dk">📐 Plano de la Pieza</div>
     <div class="sec-body">
 
-      <!-- PROCESO — encima de la zona -->
-      <div style="margin-bottom:12px;max-width:280px">
+      <!-- FILA: proceso + layout zona/preview -->
+      <div style="margin-bottom:12px;max-width:260px">
         <label class="fl">Proceso</label>
         <select id="plProc">
           <option value="">— Seleccionar —</option>
@@ -296,42 +295,79 @@ input:disabled,select:disabled,textarea:disabled{background:#efefef;color:var(--
         </select>
       </div>
 
-      <!-- ZONA DE CARGA: clic + arrastrar + Ctrl+V -->
-      <div class="pdrop-sm" id="planoDrop"
-        tabindex="0"
-        onclick="document.getElementById('planoFile').click()"
-        onkeydown="if(event.key==='Enter')document.getElementById('planoFile').click()"
-        ondragover="planoDragOver(event)"
-        ondragleave="planoDragLeave(event)"
-        ondrop="planoDrop(event)"
-        onpaste="planoPaste(event)">
-        <input type="file" id="planoFile" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp" onchange="previewPlano(event)"
-          style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
-        <div style="font-size:2.4rem;line-height:1">📐</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;color:var(--green-dk);margin-top:8px;letter-spacing:.5px">
-          Cargar Plano Técnico
-        </div>
-        <div style="font-size:.75rem;color:var(--gray-md);margin-top:6px;line-height:1.7">
-          <span style="background:rgba(45,122,45,.1);padding:2px 8px;border-radius:4px;margin:0 3px">📁 Clic para buscar</span>
-          <span style="background:rgba(45,122,45,.1);padding:2px 8px;border-radius:4px;margin:0 3px">🖱 Arrastra aquí</span>
-          <span style="background:rgba(45,122,45,.1);padding:2px 8px;border-radius:4px;margin:0 3px">📋 Ctrl+V</span>
-        </div>
-        <div style="font-size:.65rem;color:var(--gray-lt);margin-top:8px">JPG · PNG · BMP · WEBP</div>
-      </div>
+      <!-- LAYOUT PRINCIPAL: zona carga (izq) + previsualización (der) -->
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:stretch">
 
-      <!-- VISTA PREVIA + HINT -->
-      <div id="plano-preview" style="display:none;margin-top:14px;border:1.5px solid var(--gray-bd);border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)">
-        <img id="plano-img" src="" alt="Plano" style="width:100%;display:block;cursor:zoom-in" onclick="abrirPlano()">
-      </div>
-      <div id="plano-hint" style="display:none;margin-top:6px;text-align:center;font-size:.72rem;color:var(--green-dk);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px" onclick="abrirPlano()">
-        🔍 Clic en la imagen para ampliar a pantalla completa
+        <!-- ZONA DE CARGA — siempre visible -->
+        <div class="pdrop-sm" id="planoDrop"
+          tabindex="0"
+          onclick="document.getElementById('planoFile').click()"
+          onkeydown="if(event.key==='Enter')document.getElementById('planoFile').click()"
+          ondragover="planoDragOver(event)"
+          ondragleave="planoDragLeave(event)"
+          ondrop="planoDrop(event)"
+          onpaste="planoPaste(event)"
+          oncontextmenu="menuContextPlano(event)">
+          <input type="file" id="planoFile" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp"
+            onchange="previewPlano(event)"
+            style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+          <div style="font-size:2rem;line-height:1">📐</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.88rem;color:var(--green-dk);margin-top:8px;letter-spacing:.3px;text-align:center">
+            Cargar Plano
+          </div>
+          <div style="font-size:.67rem;color:var(--gray-md);margin-top:8px;line-height:1.9;text-align:center">
+            <div>📁 Clic para buscar</div>
+            <div>🖱 Arrastra aquí</div>
+            <div>📋 Ctrl+V</div>
+            <div>🖱️ Clic derecho</div>
+          </div>
+          <div style="font-size:.6rem;color:var(--gray-lt);margin-top:8px;text-align:center">
+            JPG · PNG · BMP · WEBP
+          </div>
+        </div>
+
+        <!-- PREVISUALIZACIÓN: panel derecho -->
+        <div id="plano-preview-wrap" style="display:flex;flex-direction:column;border:1.5px dashed var(--gray-bd);border-radius:8px;background:var(--gray-bg);min-height:200px;align-items:center;justify-content:center;overflow:hidden">
+          <!-- estado vacío -->
+          <div id="plano-empty" style="text-align:center;padding:24px 16px">
+            <div style="font-size:2rem;opacity:.25">🗂</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:1px;color:var(--gray-lt);margin-top:8px;text-transform:uppercase">
+              El plano aparecerá aquí
+            </div>
+          </div>
+          <!-- imagen cargada -->
+          <div id="plano-preview" style="display:none;width:100%;flex:1;flex-direction:column">
+            <img id="plano-img" src="" alt="Plano"
+              style="width:100%;flex:1;display:block;cursor:zoom-in;max-height:220px;object-fit:contain;background:#fff;padding:6px"
+              onclick="abrirPlano()">
+            <div style="background:var(--white);border-top:1px solid var(--gray-bd);padding:6px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0">
+              <span style="font-size:.65rem;color:var(--green-dk);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px;cursor:pointer" onclick="abrirPlano()">
+                🔍 Ampliar a pantalla completa
+              </span>
+              <button onclick="quitarPlano()"
+                style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.62rem;letter-spacing:1px;text-transform:uppercase;background:var(--white);border:1.5px solid var(--gray-bd);color:var(--gray-md);padding:3px 10px;border-radius:4px;cursor:pointer;flex-shrink:0">
+                ✕ Quitar
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+
+      <!-- MENÚ CONTEXTUAL -->
+      <div id="ctxMenu" style="display:none;position:fixed;z-index:99999;background:white;border:1px solid var(--gray-bd);border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.18);min-width:180px;overflow:hidden">
+        <div onclick="ctxPegar()" style="padding:10px 16px;cursor:pointer;font-size:.85rem;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:10px;color:var(--gray-dk)">
+          📋 <span>Pegar imagen</span>
+        </div>
+        <div onclick="ctxBuscar()" style="padding:10px 16px;cursor:pointer;font-size:.85rem;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:10px;color:var(--gray-dk);border-top:1px solid var(--gray-bg)">
+          📁 <span>Buscar archivo…</span>
+        </div>
       </div>
 
       <!-- MODAL ZOOM -->
       <div id="planoModal"
         style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;flex-direction:column;align-items:center;justify-content:center"
         onwheel="modalZoom(event)">
-        <!-- barra de controles -->
         <div style="position:fixed;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.13);backdrop-filter:blur(8px);padding:7px 18px;border-radius:30px;z-index:10000;box-shadow:0 2px 16px rgba(0,0,0,.3)">
           <button onclick="cambiarZoom(-25)" style="background:rgba(255,255,255,.2);border:none;color:white;font-size:1.1rem;width:34px;height:34px;border-radius:50%;cursor:pointer;font-weight:700">−</button>
           <span id="zoomLabel" style="color:white;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:1px;min-width:48px;text-align:center">100%</span>
@@ -341,7 +377,6 @@ input:disabled,select:disabled,textarea:disabled{background:#efefef;color:var(--
           <div style="width:1px;height:22px;background:rgba(255,255,255,.3);margin:0 4px"></div>
           <button onclick="cerrarPlano()" style="background:rgba(220,50,50,.65);border:none;color:white;font-size:1rem;width:34px;height:34px;border-radius:50%;cursor:pointer;font-weight:700">✕</button>
         </div>
-        <!-- contenedor scrollable -->
         <div id="modalScrollWrap"
           style="overflow:auto;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:70px 24px 30px">
           <img id="planoModalImg" src=""
@@ -512,13 +547,13 @@ const CFG = {
 
 /* ── NOMBRES — edita esta lista con los nombres reales del personal ── */
 const NOMBRES = [
-  "Andres Gamboa",
-  "Edison Madrid",
-  "Yeison Vélez",
-  "Julian Cuartas",
-  "Javier Escobar",
-  "Walner Moreno",
-  "Leandro Olguin"
+  "Gamboa",
+  "Madrid",
+  "Yeison",
+  "Julian",
+  "Javier",
+  "Walner",
+  "Olgin"
 ];
 
 /* ── Poblar todos los selectores de nombres ── */
@@ -785,10 +820,31 @@ function calcJornada(px) {
   box.style.display = "flex";
 }
 
-/* ── PLANO: COMPRIMIR Y PREVISUALIZAR ── */
 /* ══════════════════════════════════════════
-   PLANO — CARGA (archivo · arrastre · Ctrl+V)
+   PLANO — CARGA (archivo · arrastre · Ctrl+V · clic derecho)
 ══════════════════════════════════════════ */
+function mostrarThumbPlano(b64) {
+  window._planoB64       = b64;
+  $("plano-img").src     = b64;
+  $("planoModalImg").src = b64;
+  $("plano-empty").style.display           = "none";
+  $("plano-preview").style.display         = "flex";
+  $("plano-preview-wrap").style.border     = "1.5px solid var(--green)";
+  $("plano-preview-wrap").style.background = "var(--white)";
+}
+
+function quitarPlano() {
+  window._planoB64       = "";
+  $("plano-img").src     = "";
+  $("planoModalImg").src = "";
+  $("plano-preview").style.display         = "none";
+  $("plano-empty").style.display           = "block";
+  $("plano-preview-wrap").style.border     = "1.5px dashed var(--gray-bd)";
+  $("plano-preview-wrap").style.background = "var(--gray-bg)";
+  $("planoFile").value = "";
+}
+function cambiarPlano() { quitarPlano(); }
+
 function procesarImagenPlano(file) {
   if (!file || !file.type.startsWith("image/")) {
     alert("⚠️ Solo se aceptan imágenes (JPG, PNG, BMP, WEBP).");
@@ -798,8 +854,6 @@ function procesarImagenPlano(file) {
   reader.onload = ev => {
     const img = new Image();
     img.onload = () => {
-      /* Resolución alta para nitidez en el modal (1800px ancho máx)
-         Calidad 0.88 → excelente nitidez sin ser demasiado pesado      */
       const MAX = 1800, Q = 0.88;
       const ratio = Math.min(1, MAX / img.width);
       const canvas = document.createElement("canvas");
@@ -809,17 +863,8 @@ function procesarImagenPlano(file) {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const compressed = canvas.toDataURL("image/jpeg", Q);
-      window._planoB64 = compressed;
-      $("plano-img").src     = compressed;
-      $("planoModalImg").src = compressed;
-      $("plano-preview").style.display = "block";
-      $("plano-hint").style.display    = "block";
-      // restaurar estilos del drop zone
-      const dz = $("planoDrop");
-      dz.style.background  = "";
-      dz.style.borderColor = "";
-      dz.classList.remove("drag-over");
+      mostrarThumbPlano(canvas.toDataURL("image/jpeg", Q));
+      $("planoDrop").classList.remove("drag-over");
     };
     img.src = ev.target.result;
   };
@@ -829,7 +874,7 @@ function procesarImagenPlano(file) {
 /* Carga por selector de archivo */
 function previewPlano(e) { procesarImagenPlano(e.target.files[0]); }
 
-/* Arrastrar sobre la zona */
+/* Arrastrar */
 function planoDragOver(e) {
   e.preventDefault(); e.stopPropagation();
   $("planoDrop").classList.add("drag-over");
@@ -843,32 +888,54 @@ function planoDrop(e) {
   procesarImagenPlano(e.dataTransfer.files[0]);
 }
 
-/* Pegar directamente sobre la zona (Ctrl+V con foco en la zona) */
+/* Pegar con Ctrl+V directamente sobre la zona */
 function planoPaste(e) {
   e.preventDefault(); e.stopPropagation();
   const items = (e.clipboardData || e.originalEvent.clipboardData).items;
   for (const item of items) {
-    if (item.type.startsWith("image/")) {
-      procesarImagenPlano(item.getAsFile());
-      return;
-    }
+    if (item.type.startsWith("image/")) { procesarImagenPlano(item.getAsFile()); return; }
   }
   alert("⚠️ No se detectó imagen en el portapapeles.\nCopia una imagen primero (clic derecho → Copiar imagen).");
 }
 
-/* Pegar en cualquier parte de la página cuando la zona esté visible */
+/* Pegar Ctrl+V en cualquier parte cuando la zona esté visible */
 document.addEventListener("paste", e => {
-  const secPlano = $("secPlano");
-  if (!secPlano || secPlano.style.display === "none") return;
+  const dz = $("planoDrop");
+  if (!dz || dz.style.display === "none") return; // ya hay imagen cargada
   const items = (e.clipboardData || e.originalEvent.clipboardData).items;
   for (const item of items) {
-    if (item.type.startsWith("image/")) {
-      e.preventDefault();
-      procesarImagenPlano(item.getAsFile());
-      return;
-    }
+    if (item.type.startsWith("image/")) { e.preventDefault(); procesarImagenPlano(item.getAsFile()); return; }
   }
 });
+
+/* ── MENÚ CONTEXTUAL (clic derecho sobre la zona) ── */
+function menuContextPlano(e) {
+  e.preventDefault();
+  const menu = $("ctxMenu");
+  menu.style.display = "block";
+  // posicionar cerca del cursor sin salirse de pantalla
+  const x = Math.min(e.clientX, window.innerWidth  - 200);
+  const y = Math.min(e.clientY, window.innerHeight - 100);
+  menu.style.left = x + "px";
+  menu.style.top  = y + "px";
+}
+function cerrarCtxMenu() { $("ctxMenu").style.display = "none"; }
+function ctxPegar() {
+  cerrarCtxMenu();
+  navigator.clipboard.read().then(items => {
+    for (const item of items) {
+      const tipo = item.types.find(t => t.startsWith("image/"));
+      if (tipo) { item.getType(tipo).then(blob => procesarImagenPlano(blob)); return; }
+    }
+    alert("⚠️ No hay imagen en el portapapeles.\nCopia una imagen primero (clic derecho → Copiar imagen).");
+  }).catch(() => {
+    alert("⚠️ El navegador bloqueó el acceso al portapapeles.\nUsa Ctrl+V directamente sobre la zona verde.");
+  });
+}
+function ctxBuscar() { cerrarCtxMenu(); document.getElementById("planoFile").click(); }
+// cerrar menú al clic en otro lado
+document.addEventListener("click",  () => cerrarCtxMenu());
+document.addEventListener("keydown", e => { if(e.key==="Escape") { cerrarCtxMenu(); cerrarPlano(); } });
 
 /* ══════════════════════════════════════════
    MODAL ZOOM
@@ -903,19 +970,12 @@ $("planoModal").addEventListener("click", e => {
   if (e.target === $("planoModal") || e.target === document.getElementById("modalScrollWrap"))
     cerrarPlano();
 });
-/* Tecla ESC cierra el modal */
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") cerrarPlano();
-});
+/* Tecla ESC y clic en fondo oscuro cierran el modal */
 
 /* ── MOSTRAR PLANO RECIBIDO (punzonador / plegador) ── */
 function mostrarPlanoRecibido(b64) {
   if (!b64) return;
-  window._planoB64 = b64;
-  $("plano-img").src     = b64;
-  $("planoModalImg").src = b64;
-  $("plano-preview").style.display = "block";
-  $("plano-hint").style.display    = "block";
+  mostrarThumbPlano(b64);
 }
 
 /* ── MENSAJE FINAL ── */
@@ -1135,8 +1195,7 @@ function limpiar() {
   if(!confirm("¿Limpiar todos los campos?")) return;
   document.querySelectorAll("input:not([type=radio]):not([type=file]),select,textarea").forEach(e=>e.value="");
   document.querySelectorAll("input[type=radio]").forEach(e=>e.checked=false);
-  $("plano-preview").style.display="none";
-  $("plano-img").src="";
+  quitarPlano();
   // reset duraciones
   ["pu","pl"].forEach(px=>{
     for(let i=1;i<=3;i++){
@@ -1144,7 +1203,6 @@ function limpiar() {
       if(d){d.textContent="-- : --";d.className="paro-duration-value";}
     }
   });
-  // repoblar nombres tras limpiar
   poblarNombres();
 }
 
