@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F172A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://wal-35.github.io/orden_produccion/logoiltec.png">
+<title>ILTEC — Plataforma de Producción</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F172A;--ink2:#334155;--ink3:#64748B;
+  --bg:#F1F5F9;--surface:#FFFFFF;--border:#E2E8F0;--border2:#CBD5E1;
+  --blue:#1D4ED8;--blue-l:#EFF6FF;--blue-m:#BFDBFE;
+  --green:#16A34A;--green-l:#F0FDF4;--green-m:#BBF7D0;
+  --amber:#D97706;--amber-l:#FFFBEB;--amber-m:#FDE68A;
+  --purple:#7C3AED;--purple-l:#F5F3FF;--purple-m:#DDD6FE;
+  --teal:#0D9488;--teal-l:#F0FDFA;--teal-m:#99F6E4;
+  --coral:#E11D48;--coral-l:#FFF1F2;--coral-m:#FECDD3;
+  --red:#DC2626;
+  --r:10px;--r-lg:16px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --sh-md:0 4px 16px rgba(0,0,0,.10);
+  --sh-lg:0 8px 32px rgba(0,0,0,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);
+  color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.mi{font-family:'Material Icons Round';font-style:normal;line-height:1;
+  display:inline-flex;align-items:center;font-size:20px}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.on{display:flex}
+
+/* SPIN / TOAST */
+.spin-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:10000;align-items:center;justify-content:center}
+.spin-ov.on{display:flex}
+.spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,.3);
+  border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{display:none;position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%);background:var(--ink);color:white;
+  padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;
+  z-index:9999;box-shadow:var(--sh-lg);white-space:nowrap}
+.toast.ok{background:linear-gradient(135deg,#16A34A,#15803D)}
+.toast.err{background:linear-gradient(135deg,#DC2626,#B91C1C)}
+
+/* HEADER */
+.ws-hdr{background:var(--ink);padding:13px 16px;display:flex;
+  align-items:center;gap:11px;position:sticky;top:0;z-index:100}
+.ws-hdr img{height:28px;background:white;padding:3px 6px;border-radius:5px}
+.ws-hdr-info{flex:1}
+.ws-hdr-title{color:white;font-size:13px;font-weight:700}
+.ws-hdr-sub{color:#94A3B8;font-size:11px;margin-top:1px}
+.btn-back{background:rgba(255,255,255,.1);border:none;color:white;
+  border-radius:8px;padding:7px 11px;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;gap:4px;transition:background .15s}
+.btn-back:hover{background:rgba(255,255,255,.2)}
+.btn-back .mi{font-size:16px}
+
+/* BODY */
+.ws-body{flex:1;padding:18px 14px 48px;max-width:700px;margin:0 auto;width:100%}
+
+/* LANDING */
+#s-landing{background:linear-gradient(160deg,#0F172A 0%,#1E3A5F 55%,#0D9488 100%);
+  align-items:center;justify-content:center;padding:28px 16px;gap:0}
+.land-logo{background:white;padding:9px 18px;border-radius:12px;
+  margin-bottom:10px;box-shadow:var(--sh-lg)}
+.land-logo img{height:38px;display:block}
+.land-title{color:white;font-size:22px;font-weight:800;text-align:center}
+.land-sub{color:#94A3B8;font-size:12.5px;text-align:center;margin-bottom:28px}
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));
+  gap:10px;width:100%;max-width:680px}
+.role-card{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);
+  border-radius:var(--r-lg);padding:18px 10px;text-align:center;cursor:pointer;
+  transition:transform .15s,background .15s;user-select:none}
+.role-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.14)}
+.role-card:active{transform:scale(.97)}
+.role-icon{width:50px;height:50px;border-radius:14px;display:flex;
+  align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px}
+.role-card .rn{color:white;font-size:12px;font-weight:700}
+.role-card .rh{color:#94A3B8;font-size:10.5px;margin-top:2px}
+
+/* LOGIN */
+#s-login{background:linear-gradient(150deg,#0F172A,#1E3A5F 60%,#0D9488 100%);
+  align-items:center;justify-content:center;padding:32px 16px}
+.lc{background:white;border-radius:var(--r-lg);padding:24px 20px;
+  width:100%;max-width:320px;box-shadow:var(--sh-lg)}
+.lc h3{font-size:15px;font-weight:800;color:var(--ink);
+  text-align:center;margin-bottom:16px}
+.pass-wrap{position:relative}
+.pass-wrap input{padding-right:40px}
+.ojo{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--ink3);
+  display:flex;align-items:center;padding:0}
+.ojo .mi{font-size:18px}
+.rem-row{display:flex;align-items:center;gap:7px;font-size:11.5px;
+  color:var(--ink2);cursor:pointer;margin:10px 0 14px}
+.rem-row input{width:14px;height:14px;accent-color:var(--blue);flex-shrink:0}
+#btn-login{width:100%;padding:11px;
+  background:linear-gradient(135deg,var(--ink),#334155);
+  color:white;border:none;border-radius:8px;font-weight:700;
+  font-size:13px;cursor:pointer;transition:opacity .15s}
+#btn-login:hover{opacity:.9}
+#btn-login:disabled{opacity:.45;cursor:not-allowed}
+#login-err{font-size:11.5px;color:var(--red);text-align:center;
+  margin-top:10px;min-height:16px}
+
+/* PROG BAR */
+.prog-bar{background:var(--green-l);border-bottom:2px solid var(--green-m);
+  padding:7px 16px;display:flex;align-items:center;
+  justify-content:space-between;font-size:12px;color:#166534}
+.prog-bar .ui{display:flex;align-items:center;gap:6px;font-weight:600}
+.prog-bar .ui .mi{font-size:15px}
+.btn-sm-red{font-size:11px;font-weight:600;color:var(--red);background:white;
+  border:1px solid #FECACA;border-radius:6px;padding:4px 10px;cursor:pointer}
+
+/* CARDS / BOXES */
+.card{background:var(--surface);border-radius:var(--r-lg);
+  box-shadow:var(--sh-md);overflow:hidden;margin-bottom:14px}
+.card-hdr{padding:13px 15px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between}
+.card-ref{font-size:17px;font-weight:800}
+.card-meta{font-size:11px;color:var(--ink3);margin-top:2px}
+.card-body{padding:14px 15px}
+.field-box{background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r);padding:13px;margin-bottom:11px}
+.fbt{font-size:11px;font-weight:700;color:var(--ink2);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px;
+  display:flex;align-items:center;gap:5px}
+.fbt .mi{font-size:14px}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:600;color:var(--ink2)}
+
+/* INPUTS */
+input,select,textarea{width:100%;padding:8px 10px;
+  border:1.5px solid var(--border2);border-radius:8px;
+  font-size:12.5px;font-family:inherit;background:white;
+  color:var(--ink);transition:border-color .15s,box-shadow .15s;
+  appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);
+  box-shadow:0 0 0 3px #BFDBFE44;outline:none}
+textarea{resize:vertical;min-height:56px}
+
+/* STATUS CHIP */
+.chip{font-size:11px;font-weight:700;padding:3px 10px;
+  border-radius:20px;white-space:nowrap;border:1px solid}
+.chip-alist{background:#F0FDFA;color:#0D9488;border-color:#99F6E4}
+.chip-maq{background:#F5F3FF;color:#7C3AED;border-color:#DDD6FE}
+.chip-pleg{background:#FFFBEB;color:#D97706;border-color:#FDE68A}
+.chip-done{background:#F0FDF4;color:#16A34A;border-color:#BBF7D0}
+
+/* FLOW BAR */
+.fbar{background:var(--surface);border-radius:var(--r);
+  padding:10px 14px;margin-bottom:13px;box-shadow:var(--sh);
+  display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none}
+.fbar::-webkit-scrollbar{display:none}
+.fd{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0}
+.fd.done{background:var(--green)}
+.fd.act{background:var(--blue);width:10px;height:10px}
+.fl{font-size:10.5px;color:var(--ink3);font-weight:500;white-space:nowrap}
+.fl.act{color:var(--blue);font-weight:700}
+.fl.done{color:var(--green)}
+.fa{color:var(--border2);font-size:12px;flex-shrink:0}
+
+/* INFO BANNER */
+.info-snap{border-radius:var(--r);padding:9px 13px;
+  font-size:12px;line-height:1.7;margin-bottom:13px;border:1px solid}
+.inf-b{background:var(--blue-l);border-color:var(--blue-m);color:#1E40AF}
+.inf-t{background:var(--teal-l);border-color:var(--teal-m);color:#134E4A}
+.inf-a{background:var(--amber-l);border-color:var(--amber-m);color:#92400E}
+.info-snap strong{font-weight:700}
+.info-snap a{color:var(--blue);font-weight:600}
+
+/* TIME */
+.tdisp{background:var(--amber-l);border:1px solid var(--amber-m);
+  border-radius:8px;padding:7px 11px;font-size:12.5px;
+  font-weight:700;color:var(--amber);text-align:right;margin-top:6px}
+
+/* PAROS */
+.prow{display:grid;grid-template-columns:2fr 1fr 1fr 68px;
+  gap:5px;align-items:center;margin-bottom:5px}
+.pt{font-size:11px;font-weight:700;color:var(--red);text-align:center}
+
+/* TABLE MAT */
+.tmat{width:100%;border-collapse:collapse;font-size:11px;margin-top:5px}
+.tmat th{background:var(--ink);color:white;padding:6px 8px;
+  text-align:left;font-size:10.5px;font-weight:600;
+  border-right:1px solid #374151}
+.tmat th:last-child{border-right:none}
+.tmat td{border-bottom:1px solid var(--border);
+  border-right:1px solid var(--border);padding:0}
+.tmat td:last-child{border-right:none}
+.tmat tr:last-child td{border-bottom:none}
+.tmat input,.tmat select{border:none;padding:6px 7px;
+  background:transparent;font-size:11px;border-radius:0}
+.tmat tr:hover td{background:var(--blue-l)}
+
+/* QUALITY */
+.qrow{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border)}
+.qrow:last-child{border-bottom:none}
+.ql{font-size:12px;color:var(--ink2);font-weight:500}
+.rg{display:flex;gap:7px}
+.ro{display:flex;align-items:center;gap:5px;font-size:11.5px;
+  cursor:pointer;padding:4px 9px;border-radius:20px;
+  border:1.5px solid var(--border2);transition:all .15s;user-select:none}
+.ro input{display:none}
+.ro.ok:has(input:checked){background:var(--green-l);border-color:var(--green);color:var(--green)}
+.ro.nc:has(input:checked){background:var(--coral-l);border-color:var(--coral);color:var(--coral)}
+.rd{width:7px;height:7px;border-radius:50%;background:var(--border2)}
+.ro.ok:has(input:checked) .rd{background:var(--green)}
+.ro.nc:has(input:checked) .rd{background:var(--coral)}
+
+/* BUTTONS */
+.btn{width:100%;padding:13px 16px;border:none;border-radius:var(--r);
+  font-weight:700;font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;margin-top:14px;color:white;
+  transition:transform .1s,opacity .15s;letter-spacing:.3px}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn .mi{font-size:17px}
+.btn-blue{background:linear-gradient(135deg,#1D4ED8,#2563EB)}
+.btn-teal{background:linear-gradient(135deg,#0D9488,#0F766E)}
+.btn-purple{background:linear-gradient(135deg,#7C3AED,#6D28D9)}
+.btn-amber{background:linear-gradient(135deg,#D97706,#B45309)}
+.btn-green{background:linear-gradient(135deg,#16A34A,#15803D)}
+.btn-ink{background:linear-gradient(135deg,#1E293B,#0F172A)}
+
+/* MACHINE SELECTOR */
+.maq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0}
+.maq-card{border:2px solid var(--border2);border-radius:var(--r);
+  padding:12px 8px;text-align:center;cursor:pointer;
+  transition:all .15s;user-select:none;background:white}
+.maq-card:hover{border-color:var(--purple-m);background:var(--purple-l)}
+.maq-card.sel{border-color:var(--purple);background:var(--purple-l)}
+.maq-card .mi{font-size:24px;color:var(--ink3);margin-bottom:5px}
+.maq-card.sel .mi{color:var(--purple)}
+.maq-card .mn{font-size:11.5px;font-weight:700;color:var(--ink2)}
+.maq-card.sel .mn{color:var(--purple)}
+
+/* QUEUE ITEMS */
+.q-item{background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:12px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.q-item:hover{border-color:var(--blue-m);box-shadow:var(--sh)}
+.q-item .ref{font-size:15px;font-weight:700}
+.q-item .meta{font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:44px 20px;background:var(--surface);
+  border-radius:var(--r-lg);box-shadow:var(--sh)}
+.empty .ei{font-size:44px;margin-bottom:10px;display:block}
+.empty h3{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.empty p{font-size:12.5px;color:var(--ink3);line-height:1.6}
+
+/* Upload CSS eliminado — se usa URL directa */
+
+/* PLAN VIEWER */
+.plan-viewer{width:100%;height:340px;border:none;border-radius:var(--r);
+  background:var(--bg)}
+.plan-img{width:100%;max-height:340px;object-fit:contain;
+  border-radius:var(--r);background:var(--bg)}
+
+/* REPORT VIEW */
+.rv{background:var(--surface);border-radius:var(--r-lg);
+  box-shadow:var(--sh-md);overflow:hidden;margin-bottom:14px}
+.rv-hdr{background:var(--ink);padding:12px 15px;
+  display:flex;align-items:center;justify-content:space-between}
+.rv-ref{font-size:16px;font-weight:800;color:white}
+.rv-meta{font-size:11px;color:#94A3B8;margin-top:2px}
+.rv-sec{padding:13px 15px;border-bottom:1px solid var(--border)}
+.rv-sec:last-child{border-bottom:none}
+.rv-st{font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--ink3);margin-bottom:9px;
+  display:flex;align-items:center;gap:5px}
+.rv-st .mi{font-size:13px}
+.rv-row{display:flex;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.rv-lbl{font-size:11px;font-weight:700;color:var(--ink2);
+  min-width:105px;flex-shrink:0}
+.rv-val{font-size:11.5px;color:var(--ink)}
+.c-ok{background:var(--green-l);color:var(--green);font-size:10.5px;
+  font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid var(--green-m)}
+.c-nc{background:var(--coral-l);color:var(--coral);font-size:10.5px;
+  font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid var(--coral-m)}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;gap:10px;
+  padding-bottom:13px;margin-bottom:15px;border-bottom:2px solid var(--border)}
+.sh-icon{width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center}
+.sh-text{font-size:14px;font-weight:800;color:var(--ink)}
+.sh-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+
+/* MACHINE ASSIGN CHECKBOXES */
+.maq-assign{display:flex;flex-direction:column;gap:7px}
+.maq-chk{display:flex;align-items:center;gap:9px;
+  padding:9px 12px;border:1.5px solid var(--border2);
+  border-radius:var(--r);cursor:pointer;transition:all .15s;background:white}
+.maq-chk:hover{border-color:var(--purple-m);background:var(--purple-l)}
+.maq-chk input[type=checkbox]{width:16px;height:16px;
+  accent-color:var(--purple);flex-shrink:0;cursor:pointer}
+.maq-chk .mi{font-size:18px;color:var(--ink3)}
+.maq-chk span{font-size:12.5px;font-weight:600}
+.maq-chk:has(input:checked){border-color:var(--purple);background:var(--purple-l)}
+.maq-chk:has(input:checked) .mi{color:var(--purple)}
+
+/* RESPONSIVE */
+@media(max-width:400px){
+  .g3{grid-template-columns:1fr 1fr}
+  .g4{grid-template-columns:1fr 1fr}
+  .prow{grid-template-columns:1.5fr 1fr 1fr 58px}
+  .roles-grid{grid-template-columns:1fr 1fr}
+  .maq-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="spin-ov" id="spin"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     LANDING
+══════════════════════════════════════ -->
+<div class="screen on" id="s-landing">
+  <div class="land-logo">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+  </div>
+  <div class="land-title">ILTEC — Producción</div>
+  <div class="land-sub">Selecciona tu área de trabajo</div>
+  <div class="roles-grid">
+    <div class="role-card" onclick="go('login')">
+      <div class="role-icon" style="background:#1D4ED820">🔐</div>
+      <div class="rn">Programador</div><div class="rh">Crea órdenes</div>
+    </div>
+    <div class="role-card" onclick="go('alist')">
+      <div class="role-icon" style="background:#0D948820">🔧</div>
+      <div class="rn">Alistamiento</div><div class="rh">Asigna máquinas</div>
+    </div>
+    <div class="role-card" onclick="pickMaquina()">
+      <div class="role-icon" style="background:#7C3AED20">⚙️</div>
+      <div class="rn">Máquinas</div><div class="rh">Punzonado / Láser</div>
+    </div>
+    <div class="role-card" onclick="go('pleg')">
+      <div class="role-icon" style="background:#D9770620">📐</div>
+      <div class="rn">Plegado</div><div class="rh">3 plegadores</div>
+    </div>
+    <div class="role-card" onclick="go('trans')">
+      <div class="role-icon" style="background:#16A34A20">📊</div>
+      <div class="rn">Transcriptora</div><div class="rh">Reportes finales</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LOGIN PROGRAMADOR
+══════════════════════════════════════ -->
+<div class="screen" id="s-login">
+  <div class="lc">
+    <div style="text-align:center;margin-bottom:16px">
+      <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC"
+        style="height:34px;background:var(--ink);padding:5px 10px;border-radius:7px">
+    </div>
+    <h3>🔐 Acceso Programador</h3>
+    <div class="field" style="margin-bottom:11px">
+      <label>Correo electrónico</label>
+      <input type="email" id="l-email" placeholder="programador@iltec.com" autocomplete="username">
+    </div>
+    <div class="field" style="margin-bottom:4px">
+      <label>Contraseña</label>
+      <div class="pass-wrap">
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password">
+        <button class="ojo" id="tog-pass" type="button">
+          <span class="mi">visibility_off</span>
+        </button>
+      </div>
+    </div>
+    <label class="rem-row">
+      <input type="checkbox" id="l-rem" checked>Recordar sesión
+    </label>
+    <button id="btn-login" onclick="doLogin()">Ingresar</button>
+    <div id="login-err"></div>
+    <button onclick="go('landing')" style="width:100%;margin-top:10px;
+      background:none;border:none;color:var(--ink3);font-size:12px;
+      cursor:pointer;padding:6px">← Volver</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SELECTOR DE MÁQUINA (modal en landing)
+══════════════════════════════════════ -->
+<div class="screen" id="s-maq-pick">
+  <div class="ws-hdr">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+    <div class="ws-hdr-info">
+      <div class="ws-hdr-title">Seleccionar Máquina</div>
+      <div class="ws-hdr-sub">¿En cuál máquina trabajas hoy?</div>
+    </div>
+    <button class="btn-back" onclick="go('landing')">
+      <span class="mi">home</span>
+    </button>
+  </div>
+  <div class="ws-body" style="padding-top:24px">
+    <div class="maq-grid">
+      <div class="maq-card" onclick="setMaquina('Punzonadora 1')">
+        <div class="mi">precision_manufacturing</div>
+        <div class="mn">Punzonadora 1</div>
+      </div>
+      <div class="maq-card" onclick="setMaquina('Punzonadora 2')">
+        <div class="mi">precision_manufacturing</div>
+        <div class="mn">Punzonadora 2</div>
+      </div>
+      <div class="maq-card" onclick="setMaquina('Máquina Láser')">
+        <div class="mi" style="color:#E11D48">bolt</div>
+        <div class="mn">Máquina Láser</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PROGRAMADOR DASHBOARD
+══════════════════════════════════════ -->
+<div class="screen" id="s-prog">
+  <div class="ws-hdr">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+    <div class="ws-hdr-info">
+      <div class="ws-hdr-title">Programador</div>
+      <div class="ws-hdr-sub">Panel de órdenes</div>
+    </div>
+    <button class="btn-back" onclick="doLogout()">
+      <span class="mi">logout</span>
+    </button>
+  </div>
+  <div class="prog-bar">
+    <div class="ui"><span class="mi">verified_user</span><span id="prog-email">—</span></div>
+    <button class="btn-sm-red" onclick="doLogout()">Cerrar sesión</button>
+  </div>
+  <div class="ws-body">
+    <!-- Nueva orden -->
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div style="font-size:14px;font-weight:800">Nueva Orden de Producción</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">Complete datos e inicie el flujo</div>
+        </div>
+        <span class="mi" style="font-size:26px;color:var(--blue)">add_circle</span>
+      </div>
+      <div class="card-body">
+        <div class="field-box">
+          <div class="fbt"><span class="mi" style="color:var(--blue)">info</span>Identificación de la pieza</div>
+          <div class="field" style="margin-bottom:10px">
+            <label>Ítem de la Pieza</label>
+            <input type="text" id="i_i" placeholder="Ej: 10811D">
+          </div>
+          <div class="g2">
+            <div class="field">
+              <label>Cantidad</label>
+              <input type="number" id="i_c" placeholder="0">
+            </div>
+            <div class="field">
+              <label>Calibre</label>
+              <select id="i_ca">
+                <option>12</option><option>14</option><option>16</option>
+                <option>18</option><option>20</option><option>22</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-top:8px">
+            <label>Tipo de Material</label>
+            <select id="i_m">
+              <option value="CR (Cold Rolled)">CR — Cold Rolled</option>
+              <option value="HR (Hot Rolled)">HR — Hot Rolled</option>
+              <option value="GALV (Galvanizado)">GALV — Galvanizado</option>
+              <option value="ALUM (Aluminio)">ALUM — Aluminio</option>
+              <option value="INOX (Inoxidable)">INOX — Inoxidable</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Plano — URL gratuita (GitHub, Drive, etc.) -->
+        <div class="field-box">
+          <div class="fbt">
+            <span class="mi" style="color:var(--teal)">description</span>
+            Link del Plano (GitHub / Drive)
+          </div>
+          <div class="field">
+            <label>URL del plano (PDF o imagen)</label>
+            <input type="url" id="i_p"
+              placeholder="https://wal-35.github.io/planos/10811D.pdf">
+          </div>
+          <div style="margin-top:6px;font-size:11px;color:var(--ink3);
+            display:flex;align-items:center;gap:5px">
+            <span class="mi" style="font-size:14px;color:var(--green)">info</span>
+            Pega el link del plano ya subido a GitHub o Google Drive. Gratis y sin límites.
+          </div>
+        </div>
+
+        <button class="btn btn-blue" onclick="crearOrden()">
+          <span class="mi">rocket_launch</span>Crear y enviar a Alistamiento
+        </button>
+      </div>
+    </div>
+
+    <!-- Órdenes activas -->
+    <div style="font-size:13px;font-weight:700;color:var(--ink2);
+      margin-bottom:9px;display:flex;align-items:center;gap:6px">
+      <span class="mi" style="font-size:15px;color:var(--ink3)">list_alt</span>
+      Órdenes en proceso
+    </div>
+    <div id="prog-orders"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ALISTAMIENTO
+══════════════════════════════════════ -->
+<div class="screen" id="s-alist">
+  <div class="ws-hdr">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+    <div class="ws-hdr-info">
+      <div class="ws-hdr-title">Área: Alistamiento</div>
+      <div class="ws-hdr-sub">Preparación y asignación a máquinas</div>
+    </div>
+    <button class="btn-back" onclick="go('landing')"><span class="mi">home</span></button>
+  </div>
+  <div class="ws-body"><div id="alist-content"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MÁQUINA (Punzonado / Láser)
+══════════════════════════════════════ -->
+<div class="screen" id="s-maq">
+  <div class="ws-hdr">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+    <div class="ws-hdr-info">
+      <div class="ws-hdr-title" id="maq-hdr-title">Máquina</div>
+      <div class="ws-hdr-sub">Registro del proceso</div>
+    </div>
+    <button class="btn-back" onclick="go('landing')"><span class="mi">home</span></button>
+  </div>
+  <div class="ws-body"><div id="maq-content"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PLEGADO
+══════════════════════════════════════ -->
+<div class="screen" id="s-pleg">
+  <div class="ws-hdr">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+    <div class="ws-hdr-info">
+      <div class="ws-hdr-title">Área: Plegado</div>
+      <div class="ws-hdr-sub">Cola de órdenes disponibles</div>
+    </div>
+    <button class="btn-back" onclick="go('landing')"><span class="mi">home</span></button>
+  </div>
+  <div class="ws-body"><div id="pleg-content"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TRANSCRIPTORA
+══════════════════════════════════════ -->
+<div class="screen" id="s-trans">
+  <div class="ws-hdr">
+    <img src="https://wal-35.github.io/reporte/logoiltec.png" alt="ILTEC">
+    <div class="ws-hdr-info">
+      <div class="ws-hdr-title">Analista / Transcriptora</div>
+      <div class="ws-hdr-sub">Reportes de producción completados</div>
+    </div>
+    <button class="btn-back" onclick="go('landing')"><span class="mi">home</span></button>
+  </div>
+  <div class="ws-body"><div id="trans-content"></div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// ESTADO GLOBAL
+// ═══════════════════════════════════════════
+let fbReady = false;
+let unsubs = {};
+let currentMaquina = null;
+
+const opcMotivos = `<option value="">Cód...</option>
+  <option>01 - Falla Eléctrica</option><option>02 - Falla Mecánica</option>
+  <option>03 - Falta Material</option><option>04 - Ajuste Máquina</option>
+  <option>05 - Cambio Herramienta</option><option>06 - Limpieza</option>
+  <option>07 - Reunión/Capacitación</option><option>08 - Pausa Activa/Baño</option>`;
+const opcLam=`<option value="">Tipo...</option><option>Lámina</option><option>Retal</option>`;
+const opcOps=`<option value="">Seleccione...</option><option value="Ninguno">Ninguno</option>
+  <option>Juan Paz</option><option>Carlos Gomez</option>
+  <option>Andres Ruiz</option><option>Pedro Lopez</option>`;
+const defT=`<option value="">Tipo defecto...</option><option>Rebabas</option>
+  <option>Rayas/Golpes</option><option>Medida fuera de tolerancia</option>
+  <option>Deformación</option><option>Falta de perforación</option><option>Ángulo incorrecto</option>`;
+const defC=`<option value="">Causa...</option><option>Herramienta desgastada</option>
+  <option>Error de programación</option><option>Mal posicionamiento</option>
+  <option>Material defectuoso</option><option>Falla de máquina</option><option>Ajuste de galga</option>`;
+const defA=`<option value="">Acción...</option><option>Ajustar herramienta</option>
+  <option>Reprogramar pieza</option><option>Capacitar operario</option>
+  <option>Mantenimiento preventivo</option><option>Corregir tope</option><option>Cambiar material</option>`;
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const v = id => { let e=$(id); return e ? e.value : ''; };
+const mi = (n,s=18) => `<span class="mi" style="font-size:${s}px">${n}</span>`;
+
+function toast(msg, type='') {
+  let t=$('toast'); t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',3200);
+}
+function spin(on){ $('spin').className='spin-ov'+(on?' on':''); }
+
+function goScreen(sid) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  let el=$(sid);
+  if(el){ el.classList.add('on'); window.scrollTo(0,0); }
+}
+
+function calT(idI,idF,idR) {
+  let ti=v(idI),tf=v(idF),el=$(idR);
+  if(!el) return '0h 0m';
+  if(ti&&tf){
+    let[h1,m1]=ti.split(':').map(Number);
+    let[h2,m2]=tf.split(':').map(Number);
+    let d=(new Date(0,0,0,h2,m2))-(new Date(0,0,0,h1,m1));
+    if(d<0)d+=86400000;
+    let hh=Math.floor(d/3600000),mm=Math.floor((d%3600000)/60000);
+    el.textContent=`⏱ ${hh}h ${mm}m`;
+    return `${hh}h ${mm}m`;
+  }
+  el.textContent='⏱ —'; return '0h 0m';
+}
+function getR(name){
+  for(let r of document.getElementsByName(name)) if(r.checked) return r.value;
+  return 'N/A';
+}
+function getMat(pre){
+  let rows=[];
+  for(let k=1;k<=6;k++){
+    let md=v(`${pre}_md${k}`);
+    if(md) rows.push({tipo:v(`${pre}_lr${k}`)||'',medidas:md,
+      cant_sobra:v(`${pre}_cs${k}`)||'0',med_sobra:v(`${pre}_ms${k}`)||'',
+      pzas_lamina:v(`${pre}_pz${k}`)||'0'});
+  }
+  return rows;
+}
+function getParos(pre,n=2){
+  let p=[];
+  for(let j=1;j<=n;j++){
+    let c=v(`${pre}_p${j}_c`);
+    if(c) p.push({codigo:c,inicio:v(`${pre}_p${j}_i`)||'',
+      fin:v(`${pre}_p${j}_f`)||'',
+      tiempo:($(`${pre}_p${j}_t`)||{}).textContent||'—'});
+  }
+  return p;
+}
+
+function flowBar(estado){
+  const steps=['alistamiento','maquina','plegado','completado'];
+  const labels=['Alistamiento','Máquina','Plegado','Completado'];
+  let idx=steps.indexOf(estado);
+  return '<div class="fbar">'+steps.map((s,i)=>{
+    let c=i<idx?'done':i===idx?'act':'';
+    return `<div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+      <div class="fd ${c}"></div>
+      <span class="fl ${c}">${labels[i]}</span>
+    </div>${i<3?'<span class="fa">›</span>':''}`;
+  }).join('')+'</div>';
+}
+
+function chipEstado(e){
+  const m={alistamiento:'chip-alist',maquina:'chip-maq',
+    plegado:'chip-pleg',completado:'chip-done'};
+  const l={alistamiento:'Alistamiento',maquina:'En Máquina',
+    plegado:'En Plegado',completado:'✅ Completado'};
+  return `<span class="chip ${m[e]||''}">${l[e]||e}</span>`;
+}
+
+function snapInfo(o){
+  let d=o.programador||{};
+  let planHtml='';
+  if(d.plano_url){
+    let url=d.plano_url;
+    let isImg=/\.(png|jpg|jpeg|webp)/i.test(d.plano_nombre||'');
+    if(isImg){
+      planHtml=`<br><a href="${url}" target="_blank">📄 Ver Plano</a>`;
+    } else {
+      let gv=`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+      planHtml=`<br><a href="${gv}" target="_blank">📄 Ver Plano (PDF)</a>`;
+    }
+  }
+  return `<strong>Ítem:</strong> ${d.item||'—'} &nbsp;|&nbsp;
+    <strong>Cant:</strong> ${d.cantidad||'—'} uds &nbsp;|&nbsp;
+    <strong>Mat:</strong> ${d.material||'—'} Cal.${d.calibre||'—'}${planHtml}`;
+}
+
+function planViewer(o){
+  let d=o.programador||{};
+  if(!d.plano_url) return '';
+  let url=d.plano_url;
+  let isImg=/\.(png|jpg|jpeg|webp)/i.test(d.plano_nombre||'');
+  if(isImg){
+    return `<div class="field-box" style="margin-bottom:11px">
+      <div class="fbt">${mi('description',14)} Plano de la pieza</div>
+      <img src="${url}" class="plan-img" alt="Plano">
+    </div>`;
+  }
+  let gv=`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+  return `<div class="field-box" style="margin-bottom:11px">
+    <div class="fbt">${mi('description',14)} Plano de la pieza</div>
+    <iframe src="${gv}" class="plan-viewer" title="Plano"></iframe>
+  </div>`;
+}
+
+function paroRows(pre,n=2){
+  let h=`<div class="prow" style="margin-bottom:3px">
+    <span style="font-size:10px;font-weight:600;color:var(--ink3)">Código Paro</span>
+    <span style="font-size:10px;font-weight:600;color:var(--ink3)">H. Inicio</span>
+    <span style="font-size:10px;font-weight:600;color:var(--ink3)">H. Final</span>
+    <span style="font-size:10px;font-weight:600;color:var(--ink3);text-align:center">Tiempo</span>
+  </div>`;
+  for(let j=1;j<=n;j++){
+    h+=`<div class="prow">
+      <select id="${pre}_p${j}_c">${opcMotivos}</select>
+      <input type="time" id="${pre}_p${j}_i"
+        onchange="calT('${pre}_p${j}_i','${pre}_p${j}_f','${pre}_p${j}_t')">
+      <input type="time" id="${pre}_p${j}_f"
+        onchange="calT('${pre}_p${j}_i','${pre}_p${j}_f','${pre}_p${j}_t')">
+      <div id="${pre}_p${j}_t" class="pt">—</div>
+    </div>`;
+  }
+  return h;
+}
+
+function calidadRows(pre){
+  return [['Medidas',`${pre}_qm`],['Material',`${pre}_qmt`],['Calibre',`${pre}_qc`]]
+    .map(([l,n])=>`<div class="qrow">
+      <span class="ql">${l}</span>
+      <div class="rg">
+        <label class="ro ok"><input type="radio" name="${n}" value="CUMPLE">
+          <span class="rd"></span>Cumple</label>
+        <label class="ro nc"><input type="radio" name="${n}" value="NO CUMPLE">
+          <span class="rd"></span>No cumple</label>
+      </div>
+    </div>`).join('');
+}
+
+function matTable(pre){
+  let h=`<div style="overflow-x:auto"><table class="tmat">
+    <thead><tr><th>Lám/Ret</th><th>Medidas</th>
+      <th>Cant.Sobra</th><th>Med.Sobra</th><th>Pzs/Lám</th></tr></thead>
+    <tbody>`;
+  for(let i=1;i<=6;i++){
+    h+=`<tr>
+      <td><select id="${pre}_lr${i}">${opcLam}</select></td>
+      <td><input type="text" id="${pre}_md${i}" placeholder="1200x600"></td>
+      <td><input type="number" id="${pre}_cs${i}" placeholder="0"></td>
+      <td><input type="text" id="${pre}_ms${i}" placeholder="medidas"></td>
+      <td><input type="number" id="${pre}_pz${i}" placeholder="0"></td>
+    </tr>`;
+  }
+  return h+'</tbody></table></div>';
+}
+
+function defRow(pre){
+  return `<div class="g3" style="margin-top:8px">
+    <div class="field"><label>Tipo defecto</label>
+      <select id="${pre}_dt">${defT}</select></div>
+    <div class="field"><label>Causa</label>
+      <select id="${pre}_dc">${defC}</select></div>
+    <div class="field"><label>Acción</label>
+      <select id="${pre}_da">${defA}</select></div>
+  </div>`;
+}
+
+function emptyState(icon,title,desc){
+  return `<div class="empty"><span class="ei">${icon}</span>
+    <h3>${title}</h3><p>${desc}</p></div>`;
+}
+
+// ═══════════════════════════════════════════
+// NAVEGACIÓN PRINCIPAL
+// ═══════════════════════════════════════════
+function go(area){
+  const simple = {
+    landing:'s-landing', login:'s-login',
+    'prog-dash':'s-prog','maq-pick':'s-maq-pick'
+  };
+  if(simple[area]){ goScreen(simple[area]); return; }
+
+  if(area==='prog'){
+    if(window.auth&&window.auth.currentUser){
+      $('prog-email').textContent=window.auth.currentUser.email;
+      goScreen('s-prog');
+      subProgOrders();
+    } else { goScreen('s-login'); }
+    return;
+  }
+  if(area==='alist'){ goScreen('s-alist'); subAlist(); return; }
+  if(area==='pleg')  { goScreen('s-pleg');  subPleg(); return; }
+  if(area==='trans') { goScreen('s-trans'); subTrans(); return; }
+}
+
+function pickMaquina(){ goScreen('s-maq-pick'); }
+
+function setMaquina(maq){
+  currentMaquina = maq;
+  $('maq-hdr-title').textContent = maq;
+  goScreen('s-maq');
+  subMaquina(maq);
+}
+
+// ═══════════════════════════════════════════
+// LOGIN / AUTH
+// ═══════════════════════════════════════════
+$('tog-pass').addEventListener('click',function(){
+  let i=$('l-pass');
+  if(i.type==='password'){i.type='text';this.querySelector('.mi').textContent='visibility';}
+  else{i.type='password';this.querySelector('.mi').textContent='visibility_off';}
+});
+['l-email','l-pass'].forEach(id=>
+  $(id).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();}));
+
+async function doLogin(){
+  const email=$('l-email').value.trim();
+  const pass=$('l-pass').value;
+  const rem=$('l-rem').checked;
+  const errEl=$('login-err');
+  const btnL=$('btn-login');
+  if(!email||!pass){errEl.textContent='⚠️ Ingresa correo y contraseña.';return;}
+  if(!fbReady){errEl.textContent='⏳ Cargando...';return;}
+  errEl.textContent='';btnL.disabled=true;btnL.textContent='Verificando...';
+  try{
+    const pers=rem?window.FA.browserLocalPersistence:window.FA.browserSessionPersistence;
+    await window.FA.setPersistence(window.auth,pers);
+    const cred=await window.FA.signInWithEmailAndPassword(window.auth,email,pass);
+    $('prog-email').textContent=cred.user.email;
+    go('prog');
+  }catch(err){
+    const msgs={'auth/user-not-found':'❌ Usuario no encontrado.',
+      'auth/wrong-password':'❌ Contraseña incorrecta.',
+      'auth/invalid-email':'❌ Correo no válido.',
+      'auth/too-many-requests':'⏳ Demasiados intentos.',
+      'auth/invalid-credential':'❌ Correo o contraseña incorrectos.',
+      'auth/network-request-failed':'❌ Sin conexión WiFi.'};
+    errEl.textContent=msgs[err.code]||`❌ ${err.message}`;
+  }finally{btnL.disabled=false;btnL.textContent='Ingresar';}
+}
+
+async function doLogout(){
+  if(unsubs.prog){unsubs.prog();delete unsubs.prog;}
+  await window.FA.signOut(window.auth);
+  go('landing');
+}
+
+// Upload eliminado — se usa URL directa
+
+// ═══════════════════════════════════════════
+// PROGRAMADOR — CREAR ORDEN
+// ═══════════════════════════════════════════
+async function crearOrden(){
+  const item=v('i_i').trim();
+  if(!item){toast('⚠️ Ingresa el Ítem de la pieza','err');return;}
+  spin(true);
+  try{
+    const planoUrl = v('i_p').trim() || null;
+    await window.addDoc(window.collection(window.db,'ordenes'),{
+      estado:'alistamiento',
+      creado_en:new Date().toISOString(),
+      programador:{
+        item, cantidad:parseInt(v('i_c'))||0,
+        material:v('i_m'), calibre:v('i_ca'),
+        plano_url: planoUrl,
+        plano_nombre: planoUrl ? planoUrl.split('/').pop() : null,
+      },
+      alistamiento:null, completado_en:null,
+    });
+    toast('✅ Orden creada — esperando Alistamiento','ok');
+    $('i_i').value='';$('i_c').value='';$('i_p').value='';
+  }catch(e){toast('❌ Error al crear la orden','err');console.error(e);}
+  finally{spin(false);}
+}
+
+// ═══════════════════════════════════════════
+// PROGRAMADOR — SUSCRIPCIÓN ÓRDENES
+// ═══════════════════════════════════════════
+function subProgOrders(){
+  if(unsubs.prog) unsubs.prog();
+  const q=window.query(
+    window.collection(window.db,'ordenes'),
+    window.orderByFS('creado_en','desc'),
+    window.limitFS(30)
+  );
+  unsubs.prog=window.onSnapshot(q,snap=>{
+    const orders=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderProgOrders(orders);
+  });
+}
+
+function renderProgOrders(orders){
+  const el=$('prog-orders');
+  // Group by parent (original orders only at top level)
+  const originals=orders.filter(o=>!o.parent_id);
+  const subs=orders.filter(o=>o.parent_id);
+
+  if(!originals.length&&!subs.length){
+    el.innerHTML=emptyState('📋','Sin órdenes aún',
+      'Las órdenes creadas aparecerán aquí con su estado.');
+    return;
+  }
+
+  // Show all orders (originals + machine sub-orders)
+  el.innerHTML=orders.map(o=>{
+    let d=o.programador||{};
+    let fecha=o.creado_en
+      ?new Date(o.creado_en).toLocaleString('es-CO',
+        {timeZone:'America/Bogota',dateStyle:'short',timeStyle:'short'}):'—';
+    let maqLabel=o.maquina?` · ${o.maquina}`:'';
+    return `<div class="q-item" style="cursor:default">
+      <div>
+        <div class="ref">${d.item||'—'}${maqLabel}</div>
+        <div class="meta">${d.material||'—'} Cal.${d.calibre||'—'}
+          · ${d.cantidad||0} uds · ${fecha}</div>
+      </div>
+      ${chipEstado(o.estado)}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// ALISTAMIENTO
+// ═══════════════════════════════════════════
+function subAlist(){
+  if(unsubs.alist) unsubs.alist();
+  const q=window.query(
+    window.collection(window.db,'ordenes'),
+    window.whereFS('estado','==','alistamiento'),
+    window.orderByFS('creado_en','asc'),
+    window.limitFS(1)
+  );
+  unsubs.alist=window.onSnapshot(q,snap=>{
+    const el=$('alist-content');
+    if(snap.empty){
+      el.innerHTML=emptyState('✅','Sin órdenes pendientes',
+        'Cuando el Programador cree una orden, aparecerá aquí automáticamente.');
+    } else {
+      let doc=snap.docs[0];
+      let o={id:doc.id,...doc.data()};
+      el.innerHTML=renderAlist(o);
+    }
+  });
+}
+
+function renderAlist(o){
+  return `
+    ${flowBar(o.estado)}
+    <div class="info-snap inf-b">${snapInfo(o)}</div>
+    ${planViewer(o)}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ref">${o.programador?.item||'—'}</div>
+          <div class="card-meta">Nueva orden del Programador</div>
+        </div>
+        ${chipEstado(o.estado)}
+      </div>
+      <div class="card-body">
+        <div class="field-box">
+          <div class="fbt">${mi('handyman',14)} Datos de alistamiento</div>
+          <div class="field" style="margin-bottom:10px">
+            <label>Alistador responsable</label>
+            <select id="al_op">
+              <option value="">Seleccione...</option>
+              <option>Alistador 1</option><option>Alistador 2</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Observaciones</label>
+            <textarea id="al_o" rows="2"
+              placeholder="Novedades de herramienta, ajustes..."></textarea>
+          </div>
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('send',14)} Asignar a máquinas</div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:10px">
+            Selecciona las máquinas que trabajarán esta orden:
+          </p>
+          <div class="maq-assign">
+            <label class="maq-chk">
+              <input type="checkbox" id="chk-p1">
+              <span class="mi">precision_manufacturing</span>
+              <span>Punzonadora 1</span>
+            </label>
+            <label class="maq-chk">
+              <input type="checkbox" id="chk-p2">
+              <span class="mi">precision_manufacturing</span>
+              <span>Punzonadora 2</span>
+            </label>
+            <label class="maq-chk">
+              <input type="checkbox" id="chk-laser">
+              <input type="hidden">
+              <span class="mi" style="color:#E11D48">bolt</span>
+              <span>Máquina Láser</span>
+            </label>
+          </div>
+        </div>
+        <button class="btn btn-teal" onclick="enviarAlist('${o.id}')">
+          ${mi('call_split')} Asignar y enviar a máquinas
+        </button>
+      </div>
+    </div>`;
+}
+
+async function enviarAlist(id){
+  const op=v('al_op');
+  if(!op){toast('⚠️ Selecciona el alistador','err');return;}
+  const chkP1=$('chk-p1')?.checked;
+  const chkP2=$('chk-p2')?.checked;
+  const chkL=$('chk-laser')?.checked;
+  if(!chkP1&&!chkP2&&!chkL){
+    toast('⚠️ Selecciona al menos una máquina','err');return;
+  }
+  spin(true);
+  try{
+    // Get original order data
+    const origSnap=await window.getDocFB(
+      window.doc(window.db,'ordenes',id));
+    const orig=origSnap.data();
+    const alistData={operario:op,observaciones:v('al_o')||'Sin obs'};
+
+    // Create sub-order for each selected machine
+    const maquinas=[];
+    if(chkP1) maquinas.push('Punzonadora 1');
+    if(chkP2) maquinas.push('Punzonadora 2');
+    if(chkL)  maquinas.push('Máquina Láser');
+
+    await Promise.all(maquinas.map(maq=>
+      window.addDoc(window.collection(window.db,'ordenes'),{
+        estado:'maquina',
+        parent_id:id,
+        maquina:maq,
+        creado_en:orig.creado_en,
+        asignado_en:new Date().toISOString(),
+        programador:orig.programador,
+        alistamiento:alistData,
+        proceso_maquina:null,
+        plegado:null,
+        completado_en:null,
+      })
+    ));
+    // Mark original as processed
+    await window.updateDoc(
+      window.doc(window.db,'ordenes',id),
+      {estado:'procesado_alist',alistamiento:alistData}
+    );
+    toast(`✅ Enviado a ${maquinas.length} máquina(s)`,'ok');
+  }catch(e){toast('❌ Error al asignar','err');console.error(e);}
+  finally{spin(false);}
+}
+
+// ═══════════════════════════════════════════
+// MÁQUINAS (Punzonado / Láser)
+// ═══════════════════════════════════════════
+function subMaquina(maq){
+  if(unsubs.maq) unsubs.maq();
+  const q=window.query(
+    window.collection(window.db,'ordenes'),
+    window.whereFS('estado','==','maquina'),
+    window.whereFS('maquina','==',maq),
+    window.orderByFS('asignado_en','asc'),
+    window.limitFS(1)
+  );
+  unsubs.maq=window.onSnapshot(q,snap=>{
+    const el=$('maq-content');
+    if(snap.empty){
+      el.innerHTML=emptyState('⏳','Sin órdenes para esta máquina',
+        'El Alistador asignará órdenes a esta máquina cuando estén listas.');
+    } else {
+      let doc=snap.docs[0];
+      let o={id:doc.id,...doc.data()};
+      el.innerHTML=renderMaquina(o);
+    }
+  });
+}
+
+function renderMaquina(o){
+  let al=o.alistamiento||{};
+  let esLaser=o.maquina==='Máquina Láser';
+  return `
+    ${flowBar(o.estado)}
+    <div class="info-snap inf-b">${snapInfo(o)}</div>
+    <div class="info-snap inf-t" style="font-size:11.5px">
+      ${mi('handyman',13)} <strong>Alistó:</strong> ${al.operario||'—'}
+      &nbsp;|&nbsp;<strong>Obs:</strong> ${al.observaciones||'—'}
+    </div>
+    ${planViewer(o)}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ref">${o.programador?.item||'—'}</div>
+          <div class="card-meta">
+            ${esLaser?'⚡ Máquina Láser':'⚙️ '+o.maquina}
+          </div>
+        </div>
+        ${chipEstado(o.estado)}
+      </div>
+      <div class="card-body">
+        <div class="field-box">
+          <div class="fbt">${mi('group',14)} Operarios</div>
+          <div class="g2">
+            <div class="field"><label>Operario 1</label>
+              <select id="mq_op1">${opcOps}</select></div>
+            <div class="field"><label>Operario 2</label>
+              <select id="mq_op2">${opcOps}</select></div>
+          </div>
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('schedule',14)} Tiempos</div>
+          <div class="g4">
+            <div class="field"><label>F. Inicio</label>
+              <input type="date" id="mq_di"></div>
+            <div class="field"><label>H. Inicio</label>
+              <input type="time" id="mq_ti"
+                onchange="calT('mq_ti','mq_tf','mq_tot')"></div>
+            <div class="field"><label>F. Final</label>
+              <input type="date" id="mq_df"></div>
+            <div class="field"><label>H. Final</label>
+              <input type="time" id="mq_tf"
+                onchange="calT('mq_ti','mq_tf','mq_tot')"></div>
+          </div>
+          <div id="mq_tot" class="tdisp">⏱ —</div>
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('report_problem',14)} Paros</div>
+          ${paroRows('mq',2)}
+        </div>
+        <div class="field-box"
+          style="border-color:var(--blue-m);background:var(--blue-l)">
+          <div class="fbt" style="color:var(--blue)">
+            ${mi('table_chart',14)} Material (Retal / Lámina)
+          </div>
+          ${matTable('mq')}
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('fact_check',14)} Producción y defectos</div>
+          <div class="g2" style="margin-bottom:10px">
+            <div class="field"><label>Producto Conforme</label>
+              <input type="number" id="mq_c" placeholder="0"></div>
+            <div class="field"><label>Producto NO Conforme</label>
+              <input type="number" id="mq_nc" placeholder="0"></div>
+          </div>
+          ${defRow('mq')}
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('verified',14)} Inspección de Calidad</div>
+          ${calidadRows('mq')}
+        </div>
+        <div class="field">
+          <label>Observaciones</label>
+          <textarea id="mq_o" rows="2" placeholder="Comentarios..."></textarea>
+        </div>
+        <button class="btn btn-purple"
+          onclick="enviarMaquina('${o.id}')">
+          ${mi('arrow_forward')} Pasar a Plegado
+        </button>
+      </div>
+    </div>`;
+}
+
+async function enviarMaquina(id){
+  let op1=v('mq_op1')||'N/A';
+  let op2=v('mq_op2')||'Ninguno';
+  spin(true);
+  try{
+    await window.updateDoc(
+      window.doc(window.db,'ordenes',id),{
+      estado:'plegado',
+      proceso_maquina:{
+        operarios:op2!=='Ninguno'?`${op1} y ${op2}`:op1,
+        maquina:currentMaquina||'N/A',
+        fecha_inicio:v('mq_di'),hora_inicio:v('mq_ti'),
+        fecha_fin:v('mq_df'),hora_fin:v('mq_tf'),
+        tiempo_total:($('mq_tot')||{}).textContent||'—',
+        paros:getParos('mq',2),
+        material:getMat('mq'),
+        conforme:parseInt(v('mq_c'))||0,
+        no_conforme:parseInt(v('mq_nc'))||0,
+        defectos:v('mq_dt')
+          ?`Tipo:${v('mq_dt')} | Causa:${v('mq_dc')} | Acción:${v('mq_da')}`
+          :'Ninguno',
+        calidad:`Med:${getR('mq_qm')}|Mat:${getR('mq_qmt')}|Cal:${getR('mq_qc')}`,
+        observaciones:v('mq_o')||'Sin obs',
+      }
+    });
+    toast('✅ Enviado a la cola de Plegado','ok');
+  }catch(e){toast('❌ Error al guardar','err');console.error(e);}
+  finally{spin(false);}
+}
+
+// ═══════════════════════════════════════════
+// PLEGADO — cola de órdenes disponibles
+// ═══════════════════════════════════════════
+function subPleg(){
+  if(unsubs.pleg) unsubs.pleg();
+  const q=window.query(
+    window.collection(window.db,'ordenes'),
+    window.whereFS('estado','==','plegado'),
+    window.orderByFS('creado_en','asc')
+  );
+  unsubs.pleg=window.onSnapshot(q,snap=>{
+    renderPlegQueue(snap.docs.map(d=>({id:d.id,...d.data()})));
+  });
+}
+
+let activePlegId=null;
+
+function renderPlegQueue(orders){
+  const el=$('pleg-content');
+  if(!activePlegId){
+    // Mostrar cola
+    if(!orders.length){
+      el.innerHTML=emptyState('⏳','Sin órdenes en cola',
+        'Las órdenes completadas por Punzonado/Láser aparecerán aquí.');
+      return;
+    }
+    el.innerHTML=`
+      <div class="sec-hdr">
+        <div class="sh-icon" style="background:var(--amber-l)">
+          <span class="mi" style="color:var(--amber)">queue</span>
+        </div>
+        <div>
+          <div class="sh-text">Cola de plegado</div>
+          <div class="sh-sub">Selecciona una orden para trabajar</div>
+        </div>
+      </div>
+      ${orders.map(o=>{
+        let d=o.programador||{};
+        let mq=o.proceso_maquina||{};
+        return `<div class="q-item" onclick="tomarOrdenPleg('${o.id}')">
+          <div>
+            <div class="ref">${d.item||'—'}
+              <span style="font-size:11px;font-weight:500;color:var(--ink3)">
+                · ${o.maquina||'—'}
+              </span>
+            </div>
+            <div class="meta">${d.material||'—'} Cal.${d.calibre||'—'}
+              · Conf: ${mq.conforme||0} · NC: ${mq.no_conforme||0}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            ${chipEstado(o.estado)}
+            <span class="mi" style="color:var(--amber)">chevron_right</span>
+          </div>
+        </div>`;
+      }).join('')}`;
+  }
+}
+
+function tomarOrdenPleg(id){
+  activePlegId=id;
+  // Find the order in current snapshot
+  const q=window.query(
+    window.collection(window.db,'ordenes'),
+    window.whereFS('__name__','==',
+      window.doc(window.db,'ordenes',id))
+  );
+  // Get single doc
+  window.getDocFB(window.doc(window.db,'ordenes',id)).then(snap=>{
+    if(snap.exists()){
+      let o={id:snap.id,...snap.data()};
+      $('pleg-content').innerHTML=renderPlegForm(o);
+    }
+  });
+}
+
+function renderPlegForm(o){
+  let mq=o.proceso_maquina||{};
+  return `
+    ${flowBar(o.estado)}
+    <div class="info-snap inf-b">${snapInfo(o)}</div>
+    <div class="info-snap inf-t" style="font-size:11.5px">
+      ${mi('precision_manufacturing',13)}
+      <strong>${o.maquina||'—'}:</strong> ${mq.operarios||'—'}
+      &nbsp;|&nbsp;<strong>T:</strong> ${mq.tiempo_total||'—'}
+      &nbsp;|&nbsp;<strong>Conf:</strong> ${mq.conforme||0}
+      &nbsp;|&nbsp;<strong>NC:</strong> ${mq.no_conforme||0}
+    </div>
+    ${planViewer(o)}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-ref">${o.programador?.item||'—'}</div>
+          <div class="card-meta">Viene de ${o.maquina||'Máquina'}</div>
+        </div>
+        ${chipEstado(o.estado)}
+      </div>
+      <div class="card-body">
+        <div class="field-box">
+          <div class="fbt">${mi('group',14)} Operarios y máquina</div>
+          <div class="g2" style="margin-bottom:10px">
+            <div class="field"><label>Operario 1</label>
+              <select id="pl_op1">${opcOps}</select></div>
+            <div class="field"><label>Operario 2</label>
+              <select id="pl_op2">${opcOps}</select></div>
+          </div>
+          <div class="field"><label>Plegadora</label>
+            <select id="pl_mq">
+              <option value="">Seleccione...</option>
+              <option>Plegadora 1</option>
+              <option>Plegadora 2</option>
+              <option>Plegadora 3</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('schedule',14)} Tiempos</div>
+          <div class="g4">
+            <div class="field"><label>F. Inicio</label>
+              <input type="date" id="pl_di"></div>
+            <div class="field"><label>H. Inicio</label>
+              <input type="time" id="pl_ti"
+                onchange="calT('pl_ti','pl_tf','pl_tot')"></div>
+            <div class="field"><label>F. Final</label>
+              <input type="date" id="pl_df"></div>
+            <div class="field"><label>H. Final</label>
+              <input type="time" id="pl_tf"
+                onchange="calT('pl_ti','pl_tf','pl_tot')"></div>
+          </div>
+          <div id="pl_tot" class="tdisp">⏱ —</div>
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('report_problem',14)} Paros</div>
+          ${paroRows('pl',1)}
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('fact_check',14)} Producción y defectos</div>
+          <div class="g2" style="margin-bottom:10px">
+            <div class="field"><label>Producto Conforme</label>
+              <input type="number" id="pl_c" placeholder="0"></div>
+            <div class="field"><label>Producto NO Conforme</label>
+              <input type="number" id="pl_nc" placeholder="0"></div>
+          </div>
+          ${defRow('pl')}
+        </div>
+        <div class="field-box">
+          <div class="fbt">${mi('verified',14)} Inspección de Calidad</div>
+          ${calidadRows('pl')}
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Observaciones</label>
+          <textarea id="pl_o" rows="2" placeholder="Comentarios finales..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" style="background:var(--border2);color:var(--ink2);
+            flex:0 0 auto;width:auto;margin-top:14px;padding:13px 16px"
+            onclick="volverColaPleg()">
+            ${mi('arrow_back')} Cola
+          </button>
+          <button class="btn btn-green" style="flex:1"
+            onclick="enviarPleg('${o.id}')">
+            ${mi('task_alt')} Finalizar y enviar a Transcriptora
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function volverColaPleg(){
+  activePlegId=null;
+  subPleg();
+}
+
+async function enviarPleg(id){
+  let op1=v('pl_op1')||'N/A';
+  let op2=v('pl_op2')||'Ninguno';
+  spin(true);
+  try{
+    await window.updateDoc(
+      window.doc(window.db,'ordenes',id),{
+      estado:'completado',
+      completado_en:new Date().toISOString(),
+      plegado:{
+        operarios:op2!=='Ninguno'?`${op1} y ${op2}`:op1,
+        maquina:v('pl_mq')||'N/A',
+        fecha_inicio:v('pl_di'),hora_inicio:v('pl_ti'),
+        fecha_fin:v('pl_df'),hora_fin:v('pl_tf'),
+        tiempo_total:($('pl_tot')||{}).textContent||'—',
+        paros:getParos('pl',1),
+        conforme:parseInt(v('pl_c'))||0,
+        no_conforme:parseInt(v('pl_nc'))||0,
+        defectos:v('pl_dt')
+          ?`Tipo:${v('pl_dt')} | Causa:${v('pl_dc')} | Acción:${v('pl_da')}`
+          :'Ninguno',
+        calidad:`Med:${getR('pl_qm')}|Mat:${getR('pl_qmt')}|Cal:${getR('pl_qc')}`,
+        observaciones:v('pl_o')||'Sin obs',
+      }
+    });
+    activePlegId=null;
+    toast('✅ Reporte completado y enviado a Transcriptora','ok');
+    subPleg();
+  }catch(e){toast('❌ Error al guardar','err');console.error(e);}
+  finally{spin(false);}
+}
+
+// ═══════════════════════════════════════════
+// TRANSCRIPTORA
+// ═══════════════════════════════════════════
+function subTrans(){
+  if(unsubs.trans) unsubs.trans();
+  const q=window.query(
+    window.collection(window.db,'ordenes'),
+    window.whereFS('estado','==','completado'),
+    window.orderByFS('completado_en','desc'),
+    window.limitFS(50)
+  );
+  unsubs.trans=window.onSnapshot(q,snap=>{
+    renderTrans(snap.docs.map(d=>({id:d.id,...d.data()})));
+  });
+}
+
+function renderTrans(orders){
+  const el=$('trans-content');
+  if(!orders.length){
+    el.innerHTML=emptyState('📊','Sin reportes completados',
+      'Los reportes finalizados por Plegado aparecerán aquí.');
+    return;
+  }
+  el.innerHTML=orders.map(o=>buildRV(o)).join('');
+}
+
+function buildRV(o){
+  let prog=o.programador||{};
+  let al=o.alistamiento||{};
+  let mq=o.proceso_maquina||{};
+  let pl=o.plegado||{};
+  let fecha=o.completado_en
+    ?new Date(o.completado_en).toLocaleString('es-CO',
+      {timeZone:'America/Bogota',dateStyle:'short',timeStyle:'short'}):'—';
+  let parosHtml=arr=>(!arr||!arr.length)
+    ?'<span class="rv-val" style="color:var(--ink3)">Ninguno</span>'
+    :arr.map(p=>`<span class="rv-val">${p.codigo} (${p.tiempo})</span>`).join(', ');
+  let matRows=mq.material&&mq.material.length
+    ?mq.material.map(m=>`<div class="rv-row">
+        <span class="rv-lbl">• ${m.tipo||'—'}</span>
+        <span class="rv-val">Med:${m.medidas} | Sobra:${m.cant_sobra}(${m.med_sobra}) | Pzs:${m.pzas_lamina}</span>
+      </div>`).join('')
+    :'<span class="rv-val" style="color:var(--ink3)">Sin registro</span>';
+
+  return `<div class="rv">
+    <div class="rv-hdr">
+      <div>
+        <div class="rv-ref">${prog.item||'—'} · ${o.maquina||'—'}</div>
+        <div class="rv-meta">${prog.material||'—'} Cal.${prog.calibre||'—'}
+          · ${prog.cantidad||0} uds · ${fecha}</div>
+      </div>
+      <span class="chip chip-done">✅ Completado</span>
+    </div>
+    ${prog.plano_url?`<div class="rv-sec">
+      <div class="rv-st">${mi('description',12)} Plano</div>
+      <a href="${prog.plano_url}" target="_blank"
+        style="font-size:12px;color:var(--blue);font-weight:600">
+        📄 Ver plano de ${prog.item||'—'}</a>
+    </div>`:''}
+    <div class="rv-sec">
+      <div class="rv-st" style="color:var(--blue)">${mi('edit_note',12)} Datos iniciales</div>
+      <div class="rv-row"><span class="rv-lbl">Ítem:</span><span class="rv-val">${prog.item||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Cantidad:</span><span class="rv-val">${prog.cantidad||0} uds</span></div>
+      <div class="rv-row"><span class="rv-lbl">Material:</span><span class="rv-val">${prog.material||'—'} Cal.${prog.calibre||'—'}</span></div>
+    </div>
+    <div class="rv-sec">
+      <div class="rv-st" style="color:var(--teal)">${mi('handyman',12)} Alistamiento</div>
+      <div class="rv-row"><span class="rv-lbl">Operario:</span><span class="rv-val">${al.operario||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Observaciones:</span><span class="rv-val">${al.observaciones||'—'}</span></div>
+    </div>
+    <div class="rv-sec">
+      <div class="rv-st" style="color:var(--purple)">${mi('precision_manufacturing',12)} ${o.maquina||'Máquina'}</div>
+      <div class="rv-row"><span class="rv-lbl">Operarios:</span><span class="rv-val">${mq.operarios||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Tiempo:</span><span class="rv-val">${mq.tiempo_total||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Paros:</span>${parosHtml(mq.paros)}</div>
+      <div class="rv-row"><span class="rv-lbl">Conforme:</span><span class="c-ok">${mq.conforme||0} uds ✓</span></div>
+      <div class="rv-row"><span class="rv-lbl">No Conforme:</span><span class="c-nc">${mq.no_conforme||0} uds ✗</span></div>
+      <div class="rv-row"><span class="rv-lbl">Defectos:</span><span class="rv-val">${mq.defectos||'Ninguno'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Calidad:</span><span class="rv-val">${mq.calidad||'—'}</span></div>
+      <div style="margin-top:7px">
+        <div class="rv-st" style="color:var(--blue);margin-bottom:5px">${mi('table_chart',12)} Material consumido</div>
+        ${matRows}
+      </div>
+    </div>
+    <div class="rv-sec">
+      <div class="rv-st" style="color:var(--amber)">${mi('compress',12)} Plegado</div>
+      <div class="rv-row"><span class="rv-lbl">Operarios:</span><span class="rv-val">${pl.operarios||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Máquina:</span><span class="rv-val">${pl.maquina||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Tiempo:</span><span class="rv-val">${pl.tiempo_total||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Conforme:</span><span class="c-ok">${pl.conforme||0} uds ✓</span></div>
+      <div class="rv-row"><span class="rv-lbl">No Conforme:</span><span class="c-nc">${pl.no_conforme||0} uds ✗</span></div>
+      <div class="rv-row"><span class="rv-lbl">Defectos:</span><span class="rv-val">${pl.defectos||'Ninguno'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Calidad:</span><span class="rv-val">${pl.calidad||'—'}</span></div>
+      <div class="rv-row"><span class="rv-lbl">Obs:</span><span class="rv-val">${pl.observaciones||'—'}</span></div>
+    </div>
+  </div>`;
+}
+
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('SW activo'))
+      .catch(e=>console.warn('SW:',e));
+  });
+}
+</script>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, doc, updateDoc, getDoc,
+  query, where, orderBy, limit, onSnapshot,
+  enableIndexedDbPersistence
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut,
+  setPersistence, browserLocalPersistence,
+  browserSessionPersistence, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+// Firebase Storage no se usa — plano por URL gratuita
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAGQJnEbrklD4BKTYKVJxKj58HNhZtdC4I",
+  authDomain: "iltec-plataforma.firebaseapp.com",
+  projectId: "iltec-plataforma",
+  storageBucket: "iltec-plataforma.firebasestorage.app",
+  messagingSenderId: "570849030504",
+  appId: "1:570849030504:web:c19410a19a1672c357a6dd"
+};
+
+
+const app     = initializeApp(firebaseConfig);
+const db      = getFirestore(app);
+const auth    = getAuth(app);
+
+
+enableIndexedDbPersistence(db).catch(e=>{
+  if(e.code==='failed-precondition') console.warn('Firestore offline: múltiples pestañas');
+  else if(e.code==='unimplemented')  console.warn('Firestore offline: navegador no compatible');
+});
+
+// Puente global
+window.db         = db;
+window.auth       = auth;
+window.collection = collection;
+window.addDoc     = addDoc;
+window.doc        = doc;
+window.updateDoc  = updateDoc;
+window.getDocFB   = getDoc;
+window.query      = query;
+window.whereFS    = where;
+window.orderByFS  = orderBy;
+window.limitFS    = limit;
+window.onSnapshot = onSnapshot;
+window.FA = {
+  signInWithEmailAndPassword, signOut, setPersistence,
+  browserLocalPersistence, browserSessionPersistence
+};
+fbReady = true;
+window.fbReady = true;
+
+onAuthStateChanged(auth, user => {
+  if(user && document.getElementById('s-prog').classList.contains('on')){
+    document.getElementById('prog-email').textContent = user.email;
+  }
+});
+</script>
+</body>
+</html>
